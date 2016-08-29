@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="12" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="Basic" tilewidth="32" tileheight="32" tilecount="8" columns="8">
+  <image source="../TileSet.png" width="256" height="32"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="12" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,4,2,2,0,
+0,0,0,0,0,0,0,0,4,1,1,0,
+0,0,0,0,0,0,0,0,5,5,5,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,4,2,2,2,3,2,
+0,0,0,0,0,0,4,1,1,1,1,1,
+2,2,0,0,2,2,1,1,1,1,1,1,
+1,1,3,3,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <imagelayer name="Image Layer 1" offsetx="-2" offsety="-1"/>
+</map>
