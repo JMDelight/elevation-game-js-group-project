@@ -11,6 +11,8 @@ var secondJump = false;
 var releaseFirstJump = false;
 var wallJumpTimer = 0;
 
+var button;
+
 
 Game.Level1.prototype = {
   create:function() {
@@ -30,6 +32,12 @@ Game.Level1.prototype = {
 
     map.setCollisionBetween(0,6);
 
+    map.setTileIndexCallback(2, this.resetPlayer, this);
+    map.setTileIndexCallback(3, this.resetPlayer, this);
+    map.setTileIndexCallback(4, this.resetPlayer, this);
+    map.setTileIndexCallback(5, this.resetPlayer, this);
+    map.setTileIndexCallback(6, this.resetPlayer, this);
+
     player = this.add.sprite(100,1400,'player');
     player.anchor.setTo(0.5,0.5);
     player.animations.add('idle',[0,1],1,true);
@@ -44,6 +52,12 @@ Game.Level1.prototype = {
       left: this.input.keyboard.addKey(Phaser.Keyboard.A),
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
     };
+
+    // button = this.add.button(this.world.centerX - 0, this.world.centerY + 700, 'buttons', function(){
+    //   console.log('pressed');
+    // }, this, 2, 1, 0);
+    //
+    // button.fixedToCamera = true;
   },
 
 
@@ -55,7 +69,7 @@ Game.Level1.prototype = {
     }
 
     if(controls.up.isDown){
-      player.animations.play('jump');
+
     }
 
     if(controls.right.isDown){
@@ -77,7 +91,8 @@ Game.Level1.prototype = {
     }
 
     if(controls.up.isDown && (player.body.onFloor() || player.body.touching.down) && this.time.now > jumpTimer && !secondJump){
-        player.body.velocity.y = -666;
+        player.animations.play('jump');
+        player.body.velocity.y = -800;
         jumpTimer = this.time.now + 750;
         secondJump = true;
     }
@@ -101,5 +116,13 @@ Game.Level1.prototype = {
       }
     }
 
+    if(player.body.velocity.x === 0 && player.body.velocity.y === 0) {
+      player.animations.play('idle');
+    }
+
   },
+
+  resetPlayer: function(){
+    player.reset(100, 1400);
+  }
 }

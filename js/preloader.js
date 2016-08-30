@@ -21,6 +21,7 @@ Game.Preloader.prototype = {
     this.load.image('tileset', '../tiled-files/BasicTileSet64x64.png');
 
     this.load.spritesheet('player', 'assets/dude.png', 32, 48);
+    this.load.spritesheet('buttons', 'assets/button_sprite_sheet.png', 193, 71);
   },
 
   create:function(){
