@@ -1,5 +1,5 @@
 console.log("hi");
-// the first two inputs are the dimensions of the map, the next two inputs are the row numbers for the entrance and exit points for the map, counting down from the top of the map-top row is row 1 the last input will be an array with the values as individual strings for each row. //
+// the first two inputs are the dimensions of the map, the next two inputs are the row numbers for the entrance and exit points for the map, counting down from the top of the map where the top row is row 1 the last input will be an array with the values as individual strings for each row. //
 function Map(numberOfRows, numberOfColumns, startingRow, endingRow, rows) {
   this.numberOfRows = numberOfRows;
   this.numberOfColumns = numberOfColumns;
@@ -9,9 +9,80 @@ function Map(numberOfRows, numberOfColumns, startingRow, endingRow, rows) {
 }
 
 Map.prototype.stitch = function(secondMap) {
-  var startingRow = this.startingRow;
-  var mapTopRelativeStart = startingRow - this.numberOfRows;
-  var mapBotRelativeStart = this.numberOfRows - startingRow;
+  // var startingRow = this.startingRow;
+  // var mapTopRelativeToStart = 1 - startingRow;
+  // var mapBotRelativeToStart = this.numberOfRows - this.startingRow;
+  // var mapEndRelativeToStart = mapTopRelativeToStart + this.endingRow;
+  // var startingRowMapTwo = secondMap.startingRow;
+  // var mapTwoMapTopRelativeToStart = secondMap.startingRow - secondMap.numberOfRows;
+  // var mapTwoMapBotRelativeToStart = secondMap.numberOfRows - secondMap.startingRow;
+  // var mapTwoTopRelativeMapOneStart = mapEndRelativeToStart - mapTwoMapTopRelativeToStart;
+  // var mapTwoBotRelativeMapOneStart = mapEndRelativeToStart + mapTwoMapBotRelativeToStart;
+
+
+  var start = this.startingRow;
+  console.log(start, "start");
+  var top = 1 - start;
+  console.log(top, "top");
+  var bot = this.numberOfRows - start;
+  console.log(bot, "bot");
+  var end = top + this.endingRow - 1;
+  console.log(end, "end");
+  var start2 = end;
+  console.log(start2, "start2");
+  var top2 = start2 + (1 - secondMap.startingRow);
+  console.log(top2, "top2");
+  var bot2 = start2 + (secondMap.numberOfRows - secondMap.startingRow);
+  console.log(bot2, "bot2");
+  var end2 = top2 + secondMap.endingRow;
+  console.log(end2, "end2");
+
+
+  var workingTop = top;
+  var workingBot = bot;
+
+  if(top2 < top) {
+    workingTop = top2;
+  }
+  if(bot2 > bot) {
+    workingBot = bot2;
+  }
+  var newMapArray = [];
+  var mapOneWorkingRow = 0;
+  var mapTwoWorkingRow = 0;
+  for(var y = workingTop; y <= workingBot; y ++) {
+    var workingString = "";
+    if ( y < top ) {
+      workingString += this.rows[mapOneWorkingRow] + ",";
+    } else if ( y <= bot ) {
+      workingString += this.rows[mapOneWorkingRow] + ",";
+        mapOneWorkingRow ++;
+    } else {
+      // debugger;
+      var workingStringTwo = "";
+      for(var i = 0; i < this.numberOfColumns; i ++) {
+        workingStringTwo = workingStringTwo + "9,";
+      }
+      workingString += workingStringTwo;
+    }
+
+    if ( y < top2 ) {
+      workingString += secondMap.rows[mapTwoWorkingRow];
+    } else if ( y <= bot2 ) {
+      workingString += secondMap.rows[mapTwoWorkingRow];
+        mapTwoWorkingRow ++;
+    } else {
+      // debugger;
+      var workingStringTwoMapTwo = "";
+      for ( var j = 0; j < secondMap.numberOfColumns; j ++) {
+        workingStringTwoMapTwo += "0,";
+      }
+      workingString += workingStringTwoMapTwo;
+    }
+    newMapArray.push(workingString);
+  }
+  return new Map(newMapArray.length, this.numberOfColumns + secondMap.numberOfColumns, this.startingRow, end2, newMapArray);
+
 };
 
 
@@ -25,8 +96,8 @@ var testTwoArray = [
   "1,9,9,9",
   "0,1,1,1"
 ];
-var testOne = new Map(3,4,1,2,testOneArray);
-var testTwo = new Map(3,4,2,1,testTwoArray);
+var testOne = new Map(3,4,2,1,testOneArray);
+var testTwo = new Map(3,4,1,2,testTwoArray);
 
 // for testing purposes, I replaced all values of '-1' with a value of '9' //
 var elevationGainArray = [
