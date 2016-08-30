@@ -1,3 +1,17 @@
+EnemyBird = function(index,game,x,y) {
+  this.bird = game.add.sprite(x,y,'bird');
+  this.bird.anchor.setTo(0.5,0.5);
+  this.bird.name = index.toString();
+  game.physics.enable(this.bird, Phaser.Physics.ARCADE);
+  this.bird.body.immovable = true;
+  this.bird.body.collideWorldBounds = true;
+
+  this.birdTween = game.add.tween(this.bird).to({
+    y: this.bird.y + 25
+  }, 2000, 'Linear', true, 0, 100, true);
+
+}
+
 Game.Level1 = function(game) {};
 
 var map;
@@ -20,7 +34,7 @@ var button;
 
 
 Game.Level1.prototype = {
-  create:function() {
+  create:function(game) {
     this.stage.backgroundColor = '#FFBDBD';
 
     this.physics.arcade.gravity.y = 1400;
@@ -65,6 +79,8 @@ Game.Level1.prototype = {
     // }, this, 2, 1, 0);
     //
     // button.fixedToCamera = true;
+
+    new EnemyBird(0, game, player.x + 190, player.y - 280);
   },
 
 
@@ -105,7 +121,7 @@ Game.Level1.prototype = {
         secondJump = true;
     }
 
-    if(secondJump && (player.body.blocked.left || player.body.blocked.right) && !player.body.touching.down && controls.wallSlide.isDown) {
+    if(secondJump && (player.body.blocked.left || player.body.blocked.right) && !player.body.touching.down && player.body.velocity.y > 0) {
         // console.log("WALL SLIDING");
         player.body.velocity.x = 0;
 
@@ -131,11 +147,11 @@ Game.Level1.prototype = {
 
     if(onWall && controls.up.isDown) {
       if (controls.right.isDown) {
-        player.body.velocity.y = -300;
-        player.body.velocity.x = 900;
+        player.body.velocity.y += -300;
+        player.body.velocity.x += 900;
       } else if (controls.left.isDown) {
-        player.body.velocity.y = -300;
-        player.body.velocity.x = -900;
+        player.body.velocity.y += -300;
+        player.body.velocity.x += -900;
       }
       onWall = false;
     }
