@@ -7,7 +7,8 @@ var player;
 var controls = {};
 var playerSpeed = 150;
 var jumpTimer = 0;
-
+var secondJump = false;
+var releaseFirstJump = false;
 
 
 Game.Level1.prototype = {
@@ -17,7 +18,7 @@ Game.Level1.prototype = {
 
     this.physics.arcade.gravity.y = 1400;
 
-    map = this.add.tilemap('map',32,32);
+    map = this.add.tilemap('map',64,64);
     map.scale = {x:2, y:2};
 
     map.addTilesetImage('tileset');
@@ -26,9 +27,9 @@ Game.Level1.prototype = {
 
     layer.resizeWorld();
 
-    map.setCollisionBetween(0,2);
+    map.setCollisionBetween(0,6);
 
-    player = this.add.sprite(100,560,'player');
+    player = this.add.sprite(100,1400,'player');
     player.anchor.setTo(0.5,0.5);
     player.animations.add('idle',[0,1],1,true);
     player.animations.add('jump',[2],1,true);
@@ -43,6 +44,8 @@ Game.Level1.prototype = {
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
     };
   },
+
+
 
   update:function(){
     this.physics.arcade.collide(player,layer);
@@ -65,9 +68,26 @@ Game.Level1.prototype = {
       player.body.velocity.x -= playerSpeed;
     }
 
-    if(controls.up.isDown && (player.body.onFloor() || player.body.touching.down) && this.time.now > jumpTimer){
-      player.body.velocity.y = -600;
-      jumpTimer = this.time.now + 750;
+    if(player.body.touching.down || player.body.onFloor()){
+      secondJump = false;
+      releaseFirstJump = false;
     }
+
+    if(controls.up.isDown && (player.body.onFloor() || player.body.touching.down) && this.time.now > jumpTimer && !secondJump){
+        player.body.velocity.y = -666;
+        jumpTimer = this.time.now + 750;
+        secondJump = true;
+    }
+
+    if(!player.body.touching.down && !player.body.onFloor() && secondJump & controls.up.isUp) {
+      releaseFirstJump = true;
+    }
+
+    if(secondJump && releaseFirstJump && controls.up.isDown) {
+      player.body.velocity.y = -400;
+      jumpTimer = this.time.now + 750;
+      secondJump = false;
+    }
+
   },
 }

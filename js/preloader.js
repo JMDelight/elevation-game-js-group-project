@@ -18,7 +18,7 @@ Game.Preloader.prototype = {
 
     //LOAD ALL ASSETS
     this.load.tilemap('map', '../basic-tilemap/ElevationGain.csv');
-    this.load.image('tileset', '../basic-tilemap/TileSet.png');
+    this.load.image('tileset', '../tiled-files/BasicTileSet64x64.png');
 
     this.load.spritesheet('player', 'assets/dude.png', 32, 48);
   },
