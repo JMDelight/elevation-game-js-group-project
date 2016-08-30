@@ -9,6 +9,7 @@ var playerSpeed = 150;
 var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
+var wallJumpTimer = 0;
 
 
 Game.Level1.prototype = {
@@ -49,8 +50,9 @@ Game.Level1.prototype = {
 
   update:function(){
     this.physics.arcade.collide(player,layer);
-
-    player.body.velocity.x = 0;
+    if(this.time.now > wallJumpTimer) {
+      player.body.velocity.x = 0;
+    }
 
     if(controls.up.isDown){
       player.animations.play('jump');
@@ -66,6 +68,7 @@ Game.Level1.prototype = {
       player.animations.play('run');
       player.scale.setTo(-1,1);
       player.body.velocity.x -= playerSpeed;
+      console.log(playerSpeed);
     }
 
     if(player.body.touching.down || player.body.onFloor()){
@@ -86,7 +89,16 @@ Game.Level1.prototype = {
     if(secondJump && releaseFirstJump && controls.up.isDown) {
       player.body.velocity.y = -400;
       jumpTimer = this.time.now + 750;
+      wallJumpTimer = this.time.now + 60;
       secondJump = false;
+      if(player.body.blocked.left) {
+        player.body.velocity.y = -400;
+        player.body.velocity.x = -100;
+      }
+      if (player.body.blocked.right) {
+        player.body.velocity.y = -400;
+        player.body.velocity.x = 100;
+      }
     }
 
   },
