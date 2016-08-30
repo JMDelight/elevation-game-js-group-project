@@ -2,6 +2,9 @@ Game.Preloader = function(game){
   this.preloaderBar = null;
 };
 
+var map;
+var layer;
+
 Game.Preloader.prototype = {
   preload:function(){
     console.log("preloader");
@@ -14,6 +17,10 @@ Game.Preloader.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
 
     //LOAD ALL ASSETS
+    this.load.tilemap('map', '../basic-tilemap/ElevationGain.csv');
+    this.load.image('tileset', '../basic-tilemap/TileSet.png');
+
+    this.load.spritesheet('player', 'assets/dude.png', 32, 48);
   },
 
   create:function(){
