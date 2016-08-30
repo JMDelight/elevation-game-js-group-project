@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="js/phaser.js"></script>
+    <script type="text/javascript" src="js/boot.js"></script>
+    <script type="text/javascript" src="js/preloader.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    <script type="text/javascript" src="js/level1.js"></script>
+  </head>
+  <body>
+<h1>test</h1>
+    <script type="text/javascript">
+      var game;
+      var documentReadySubWindowWerentWorking = function(){
+        game = new Phaser.Game(800,600,Phaser.CANVAS,'');
+        game.state.add('Boot',Game.Boot);
+        game.state.add('Preloader',Game.Boot);
+        game.state.add('Mainmenu',Game.Boot);
+        game.state.add('Level1',Game.Boot);
+
+        game.state.start('Boot');
+      };
+      documentReadySubWindowWerentWorking();
+    </script>
+  </body>
+</html>
