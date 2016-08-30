@@ -5,12 +5,15 @@ EnemyBird = function(index,game,x,y) {
   game.physics.enable(this.bird, Phaser.Physics.ARCADE);
   this.bird.body.immovable = true;
   this.bird.body.collideWorldBounds = true;
+  this.bird.body.allowGravity = false;
 
   this.birdTween = game.add.tween(this.bird).to({
-    y: this.bird.y + 25
+    y: this.bird.y + 50
   }, 2000, 'Linear', true, 0, 100, true);
 
 }
+
+var enemy1;
 
 Game.Level1 = function(game) {};
 
@@ -29,12 +32,13 @@ var onWall = false;
 var onWallTimer = 0;
 var secondWallTimer = 0;
 var wallFlag = false;
+var baddieHurtTimer = 0;
 
 var button;
 
 
 Game.Level1.prototype = {
-  create:function(game) {
+  create:function() {
     this.stage.backgroundColor = '#FFBDBD';
 
     this.physics.arcade.gravity.y = 1400;
@@ -80,7 +84,7 @@ Game.Level1.prototype = {
     //
     // button.fixedToCamera = true;
 
-    new EnemyBird(0, game, player.x + 190, player.y - 280);
+    enemy1 = new EnemyBird(0, game, player.x + 190, player.y - 280);
   },
 
 
@@ -190,6 +194,15 @@ Game.Level1.prototype = {
       player.reset(100, 1400);
       player.lifeCount = 10;
     }
+
+    if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
+      baddieHurtTimer = this.time.now + 800;
+      if(baddieHurtTimer === this.time.now + 800) {
+        player.lifeCount --;
+        console.log('OWIE!');
+      }
+
+    }
   },
 
 
@@ -232,4 +245,10 @@ Game.Level1.prototype = {
 
   }
 
+}
+
+function checkOverlap(spriteA,spriteB) {
+  var boundsA = spriteA.getBounds();
+  var boundsB = spriteB.getBounds();
+  return Phaser.Rectangle.intersects(boundsA, boundsB);
 }
