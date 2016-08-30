@@ -10,19 +10,22 @@ var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
 var wallJumpTimer = 0;
+var hurtTimer = 0;
+var onWall = false;
+var onWallTimer = 0;
+var secondWallTimer = 0;
+var wallFlag = false;
 
 var button;
 
 
 Game.Level1.prototype = {
   create:function() {
-    console.log("level1");
     this.stage.backgroundColor = '#FFBDBD';
 
     this.physics.arcade.gravity.y = 1400;
 
     map = this.add.tilemap('map',64,64);
-    map.scale = {x:2, y:2};
 
     map.addTilesetImage('tileset');
 
@@ -38,19 +41,23 @@ Game.Level1.prototype = {
     map.setTileIndexCallback(5, this.resetPlayer, this);
     map.setTileIndexCallback(6, this.resetPlayer, this);
 
+
     player = this.add.sprite(100,1400,'player');
+    player.lifeCount = 10;
     player.anchor.setTo(0.5,0.5);
     player.animations.add('idle',[0,1],1,true);
     player.animations.add('jump',[2],1,true);
     player.animations.add('run',[3,4,5],10,true);
     this.physics.arcade.enable(player);
     this.camera.follow(player);
-    player.body.collidWorldBounds = true;
+    player.body.collideWorldBounds = true;
 
     controls = {
       right: this.input.keyboard.addKey(Phaser.Keyboard.D),
       left: this.input.keyboard.addKey(Phaser.Keyboard.A),
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
+      wallSlide: this.input.keyboard.addKey(Phaser.Keyboard.F),
+
     };
 
     // button = this.add.button(this.world.centerX - 0, this.world.centerY + 700, 'buttons', function(){
@@ -82,12 +89,13 @@ Game.Level1.prototype = {
       player.animations.play('run');
       player.scale.setTo(-1,1);
       player.body.velocity.x -= playerSpeed;
-      console.log(playerSpeed);
     }
 
     if(player.body.touching.down || player.body.onFloor()){
       secondJump = false;
       releaseFirstJump = false;
+      onWall = false;
+      wallFlag = false;
     }
 
     if(controls.up.isDown && (player.body.onFloor() || player.body.touching.down) && this.time.now > jumpTimer && !secondJump){
@@ -96,6 +104,46 @@ Game.Level1.prototype = {
         jumpTimer = this.time.now + 750;
         secondJump = true;
     }
+
+    if(secondJump && (player.body.blocked.left || player.body.blocked.right) && !player.body.touching.down && controls.wallSlide.isDown) {
+        // console.log("WALL SLIDING");
+        player.body.velocity.x = 0;
+
+        onWall = true;
+        onWallTimer = this.time.now + 210;
+        if(!wallFlag) {
+          wallFlag = true;
+          secondWallTimer = this.time.now + 300;
+        }
+
+    }
+
+    if(onWall && (!player.body.touching.down || !player.body.onFloor())) {
+      player.body.velocity.x = 0;
+      if (secondWallTimer > this.time.now) {
+        console.log("if");
+        player.body.velocity.y = 30;
+      } else {
+        player.body.velocity.y *= 1.03;
+        console.log("else", player.body.velocity.y);
+      }
+    }
+
+    if(onWall && controls.up.isDown) {
+      if (controls.right.isDown) {
+        player.body.velocity.y = -300;
+        player.body.velocity.x = 900;
+      } else if (controls.left.isDown) {
+        player.body.velocity.y = -300;
+        player.body.velocity.x = -900;
+      }
+      onWall = false;
+    }
+
+    if(this.time.now > onWallTimer) {
+      onWall = false;
+    }
+
 
     if(!player.body.touching.down && !player.body.onFloor() && secondJump & controls.up.isUp) {
       releaseFirstJump = true;
@@ -120,9 +168,52 @@ Game.Level1.prototype = {
       player.animations.play('idle');
     }
 
+    if(player.lifeCount <= 0) {
+      console.log('YOU LOSE');
+      console.log(player);
+      player.reset(100, 1400);
+      player.lifeCount = 10;
+    }
   },
 
+
+  // resetPlayerLeftSpike: function(){
+  //   player.lifeCount --;
+  //   player.position.x -= 60;
+  //   player.position.y -= 12;
+  // },
+  //
+  // resetPlayerTopSpike: function(){
+  //   player.lifeCount --;
+  //   player.position.x -= 60;
+  //   player.position.y -= 12;
+  // },
+  //
+  // resetPlayerBottomSpike: function(){
+  //   player.lifeCount --;
+  //   player.position.x -= 60;
+  //   player.position.y -= 12;
+  // },
+  //
+  // resetPlayerRightSpike: function(){
+  //   player.lifeCount --;
+  //   player.position.x -= 60;
+  //   player.position.y -= 12;
+  // },
+  //
+  // resetPlayerAllSpike: function(){
+  //   player.lifeCount --;
+  //   player.position.x -= 60;
+  //   player.position.y -= 12;
+  // },
+
   resetPlayer: function(){
-    player.reset(100, 1400);
+    map.setCollisionBetween(0,6);
+    if(this.time.now > hurtTimer) {
+      player.lifeCount --;
+      hurtTimer = this.time.now + 400;
+    }
+
   }
+
 }
