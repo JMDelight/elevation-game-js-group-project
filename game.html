@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script type="text/javascript" src="js/phaser.js"></script>
+    <!-- <script type="text/javascript" src="js/phaser.js"></script> -->
+    <script type="text/javascript" src="js/phaser.min.js"></script>
     <script type="text/javascript" src="js/boot.js"></script>
     <script type="text/javascript" src="js/preloader.js"></script>
     <script type="text/javascript" src="js/mainmenu.js"></script>
@@ -19,7 +20,9 @@
         game.state.add('Preloader',Game.Preloader);
         game.state.add('Mainmenu',Game.MainMenu);
         game.state.add('Level1',Game.Level1);
-
+        // var data2 = "-1,6,-1,-1\n-1,-1,-1,1\n1,1,1,0";
+        // game.cache.addTilemap('dynamicMap', null, data2, Phaser.Tilemap.CSV);
+        console.log(game);
         game.state.start('Boot');
       };
       documentReadySubWindowWerentWorking();

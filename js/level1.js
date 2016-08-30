@@ -1,5 +1,8 @@
-Game.Level1 = function(game) {};
 
+Game.Level1 = function(game) {
+
+  console.log(this);
+};
 var map;
 var layer;
 
@@ -15,9 +18,14 @@ var button;
 
 
 Game.Level1.prototype = {
+
   create:function() {
+    console.log(this);
     console.log("level1");
     this.stage.backgroundColor = '#FFBDBD';
+
+    var testingMapData = "9,9,9,9\n9,9,9,1\n1,1,1,0";
+    game.this.cache.addTileMap('abd', null, testingMapData, Phaser.Tilemap.CSV);
 
     this.physics.arcade.gravity.y = 1400;
 

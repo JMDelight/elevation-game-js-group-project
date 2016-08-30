@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 1</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+  //  tiles are 16x16 each
+  game.load.image('tiles', 'tiled-files/BasicTileSet64x64.png');
+}
+
+var cursors;
+
+function create() {
+
+  var data = "6,-1,-1,-1\n-1,-1,-1,1\n1,1,1,0";
+
+  //  Add data to the cache
+	console.log(game)
+  game.cache.addTilemap('dynamicMap', null, data, Phaser.Tilemap.CSV);
+
+  //  Create our map (the 16x16 is the tile size)
+  map = game.add.tilemap('dynamicMap', 64, 64);
+
+  //  'tiles' = cache image key, 16x16 = tile size
+  map.addTilesetImage('tiles', 'tiles', 64, 64);
+
+  //  0 is important
+  layer = map.createLayer(0);
+
+  //  Scroll it
+  layer.resizeWorld();
+
+  game.physics.startSystem(Phaser.Physics.ARCADE);
+
+  cursors = game.input.keyboard.createCursorKeys();
+}
+
+function update() {
+  if (cursors.left.isDown)
+  {
+      game.camera.x--;
+  }
+  else if (cursors.right.isDown)
+  {
+      game.camera.x++;
+  }
+
+  if (cursors.up.isDown)
+  {
+      game.camera.y--;
+  }
+  else if (cursors.down.isDown)
+  {
+      game.camera.y++;
+  }
+}
+
+</script>
+
+</body>
+</html>

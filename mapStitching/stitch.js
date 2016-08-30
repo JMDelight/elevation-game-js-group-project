@@ -8,6 +8,14 @@ function Map(numberOfRows, numberOfColumns, startingRow, endingRow, rows) {
   this.rows = rows;
 }
 
+Map.prototype.output = function() {
+  var outputString = "";
+  for(var mapRow = 0; mapRow < this.rows.length; mapRow ++) {
+    outputString = outputString + this.rows[mapRow] + "\n";
+  }
+  return outputString;
+};
+
 Map.prototype.stitch = function(secondMap) {
   // var startingRow = this.startingRow;
   // var mapTopRelativeToStart = 1 - startingRow;
@@ -18,7 +26,7 @@ Map.prototype.stitch = function(secondMap) {
   // var mapTwoMapBotRelativeToStart = secondMap.numberOfRows - secondMap.startingRow;
   // var mapTwoTopRelativeMapOneStart = mapEndRelativeToStart - mapTwoMapTopRelativeToStart;
   // var mapTwoBotRelativeMapOneStart = mapEndRelativeToStart + mapTwoMapBotRelativeToStart;
-
+  console.log(this.rows);
 
   var start = this.startingRow;
   console.log(start, "start");
@@ -49,11 +57,14 @@ Map.prototype.stitch = function(secondMap) {
   }
   var newMapArray = [];
   var mapOneWorkingRow = 0;
+  var mapOneExtraRows = 0;
   var mapTwoWorkingRow = 0;
+  var mapTwoExtraRows = 0;
   for(var y = workingTop; y <= workingBot; y ++) {
     var workingString = "";
     if ( y < top ) {
       workingString += this.rows[mapOneWorkingRow] + ",";
+      mapOneExtraRows ++ ;
     } else if ( y <= bot ) {
       workingString += this.rows[mapOneWorkingRow] + ",";
         mapOneWorkingRow ++;
@@ -61,12 +72,17 @@ Map.prototype.stitch = function(secondMap) {
       // debugger;
       var workingStringTwo = "";
       for(var i = 0; i < this.numberOfColumns; i ++) {
-        workingStringTwo = workingStringTwo + "9,";
+        workingStringTwo = workingStringTwo + "0,";
       }
+      // if(workingStringTwo.charAt(workingStringTwo.length - 1) === workingStringTwo.charAt(workingStringTwo.length - 2)) {
+      //   console.log(workingStringTwo);
+      //   workingStringTwo = workingStringTwo.slice(0, -1);
+      // }
       workingString += workingStringTwo;
     }
 
     if ( y < top2 ) {
+      mapTwoExtraRows ++ ;
       workingString += secondMap.rows[mapTwoWorkingRow];
     } else if ( y <= bot2 ) {
       workingString += secondMap.rows[mapTwoWorkingRow];
@@ -77,11 +93,15 @@ Map.prototype.stitch = function(secondMap) {
       for ( var j = 0; j < secondMap.numberOfColumns; j ++) {
         workingStringTwoMapTwo += "0,";
       }
+      if(workingStringTwoMapTwo.charAt(workingStringTwoMapTwo.length - 1) === ",") {
+        console.log(workingStringTwoMapTwo);
+        workingStringTwoMapTwo = workingStringTwoMapTwo.slice(0, -1);
+      }
       workingString += workingStringTwoMapTwo;
     }
     newMapArray.push(workingString);
   }
-  return new Map(newMapArray.length, this.numberOfColumns + secondMap.numberOfColumns, this.startingRow, end2, newMapArray);
+  return new Map(newMapArray.length, this.numberOfColumns + secondMap.numberOfColumns, this.startingRow + mapOneExtraRows, secondMap.endingRow + mapTwoExtraRows, newMapArray);
 
 };
 
