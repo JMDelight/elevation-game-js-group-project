@@ -59,6 +59,7 @@ EnemyDino = function(index,game,x,y) {
 
 var enemy1;
 var enemy2;
+var raptors = [];
 
 Game.Level1 = function(game) {};
 
@@ -199,7 +200,9 @@ Game.Level1.prototype = {
         // console.log(thisTile);
         if (thisTile && thisTile.index === 8) {
           console.log("Raptor home found!");
-          console.log("X: " + j + ", Y: " + i);
+          console.log("Y: " + j + ", X: " + i);
+          raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
+          console.log(raptors);
         }
       }
     }
