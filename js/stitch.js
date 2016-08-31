@@ -28,21 +28,13 @@ Map.prototype.output = function() {
 Map.prototype.stitch = function(secondMap) {
 // most of these variables are positions relative to the starting point of the map object.
   var start = this.startingRow;
-  console.log(start, "start");
   var top = 1 - start;
-  console.log(top, "top");
   var bot = this.numberOfRows - start;
-  console.log(bot, "bot");
   var end = top + this.endingRow - 1;
-  console.log(end, "end");
   var start2 = end;
-  console.log(start2, "start2");
   var top2 = start2 + (1 - secondMap.startingRow);
-  console.log(top2, "top2");
   var bot2 = start2 + (secondMap.numberOfRows - secondMap.startingRow);
-  console.log(bot2, "bot2");
   var end2 = top2 + secondMap.endingRow;
-  console.log(end2, "end2");
 
 
   var workingTop = top;
