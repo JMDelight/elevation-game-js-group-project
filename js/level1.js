@@ -60,6 +60,7 @@ EnemyDino = function(index,game,x,y) {
 var enemy1;
 var enemy2;
 var raptors = [];
+var mapCoord = [];
 
 Game.Level1 = function(game) {};
 
@@ -90,6 +91,8 @@ var bomboms;
 
 var dinoCounter = 1;
 var dinoCounterPrev = 0;
+
+var raptorHouseCount = 0;
 
 
 
@@ -135,6 +138,7 @@ Game.Level1.prototype = {
       shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.J),
       shootRight: this.input.keyboard.addKey(Phaser.Keyboard.L),
       bombom: this.input.keyboard.addKey(Phaser.Keyboard.K),
+      test: this.input.keyboard.addKey(Phaser.Keyboard.T),
 
 
     };
@@ -200,9 +204,11 @@ Game.Level1.prototype = {
         // console.log(thisTile);
         if (thisTile && thisTile.index === 8) {
           console.log("Raptor home found!");
+          raptorHouseCount ++;
           console.log("Y: " + j + ", X: " + i);
           raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
           console.log(raptors);
+          mapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
         }
       }
     }
@@ -211,10 +217,25 @@ Game.Level1.prototype = {
 
 
   update:function(){
+    var self = this;
+    var deadRaptors = 0;
+    raptors.forEach(function(raptor) {
+      if (!raptor.dino.alive) {
+        deadRaptors ++;
+      }
+    })
+    if(this.time.now % 300 === 0) {
+      mapCoord.forEach(function(coordinates) {
+        if(raptors.length - deadRaptors < raptorHouseCount * 3) {
+          raptors.push(new EnemyDino(raptors.length, game, coordinates[0], coordinates[1]));
+        }
+      });
+    }
+
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.dino, layer);
-    var self = this;
+
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
@@ -341,6 +362,9 @@ Game.Level1.prototype = {
     //   }
     //
     // }
+    if (controls.test.isDown) {
+      console.log(raptors);
+    }
 
     if (controls.shoot.isDown) {
       this.shootLaser();
