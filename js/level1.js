@@ -69,7 +69,7 @@ var layer;
 
 var player;
 var controls = {};
-var playerSpeed = 150;
+var playerSpeed = 300;
 var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
@@ -237,7 +237,6 @@ Game.Level1.prototype = {
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.dino, layer);
-
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
@@ -247,6 +246,8 @@ Game.Level1.prototype = {
         if(baddieHurtTimer === now + 800) {
           player.lifeCount --;
           console.log('OWIE!');
+          playerSpeed -= (10 - player.lifeCount) * 10;
+          console.log(playerSpeed);
         }
       }
     });
@@ -383,6 +384,7 @@ Game.Level1.prototype = {
         player.lifeCount -= 2;
         console.log("ouchheee wizz");
         hurtTimer = self.time.now + 400;
+        playerSpeed -= (10 - player.lifeCount) * 15;
       }
     }
 
@@ -411,8 +413,6 @@ Game.Level1.prototype = {
     if(checkOverlap(bomboms, enemy2.dino)) {
       enemy2.dino.kill();
     }
-
-
 
 
     ////dino
@@ -514,6 +514,8 @@ Game.Level1.prototype = {
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
             console.log('OWIE!');
+            playerSpeed -= (10 - player.lifeCount) * 5;
+            console.log(playerSpeed);
           }
         }
       });
