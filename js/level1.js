@@ -60,6 +60,7 @@ EnemyDino = function(index,game,x,y) {
 var enemy1;
 var enemy2;
 var raptors = [];
+var mapCoord = [];
 
 Game.Level1 = function(game) {};
 
@@ -90,6 +91,8 @@ var bomboms;
 
 var dinoCounter = 1;
 var dinoCounterPrev = 0;
+
+var raptorHouseCount = 0;
 
 
 
@@ -135,6 +138,7 @@ Game.Level1.prototype = {
       shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.J),
       shootRight: this.input.keyboard.addKey(Phaser.Keyboard.L),
       bombom: this.input.keyboard.addKey(Phaser.Keyboard.K),
+      test: this.input.keyboard.addKey(Phaser.Keyboard.T),
 
 
     };
@@ -200,9 +204,11 @@ Game.Level1.prototype = {
         // console.log(thisTile);
         if (thisTile && thisTile.index === 8) {
           console.log("Raptor home found!");
+          raptorHouseCount ++;
           console.log("Y: " + j + ", X: " + i);
           raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
           console.log(raptors);
+          mapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
         }
       }
     }
@@ -211,11 +217,26 @@ Game.Level1.prototype = {
 
 
   update:function(){
-    game.debug.text(game.time.fps || '--', 2, 14, "#000");
+
+    var self = this;
+    var deadRaptors = 0;
+    raptors.forEach(function(raptor) {
+      if (!raptor.dino.alive) {
+        deadRaptors ++;
+      }
+    });
+    if(this.time.now % 300 === 0) {
+      mapCoord.forEach(function(coordinates) {
+        if(raptors.length - deadRaptors < raptorHouseCount * 3) {
+          raptors.push(new EnemyDino(raptors.length, game, coordinates[0], coordinates[1]));
+        }
+      });
+    }
+
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.dino, layer);
-    var self = this;
+
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
@@ -342,6 +363,9 @@ Game.Level1.prototype = {
     //   }
     //
     // }
+    if (controls.test.isDown) {
+      console.log(raptors);
+    }
 
     if (controls.shoot.isDown) {
       this.shootLaser();
@@ -383,16 +407,16 @@ Game.Level1.prototype = {
 
     ////dino
     ////movement
-    var self = this;
+
     raptors.forEach(function(raptor) {
-      if ((Math.floor(Math.random() * 3) == 0)) {
+      if ((Math.floor(Math.random() * 3) === 0)) {
         if(dinoCounter > 0 && dinoCounter < 300 && dinoCounter !== dinoCounterPrev) {
           if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
             var speed = 3;
-            if((Math.floor(Math.random() * 2) == 0)) speed = 4;
-            if((Math.floor(Math.random() * 3) == 0)) speed = 8;
-            if((Math.floor(Math.random() * 16) == 0)) speed = 20;
-            if((Math.floor(Math.random() * 2) == 0)) {
+            if((Math.floor(Math.random() * 2) === 0)) speed = 4;
+            if((Math.floor(Math.random() * 3) === 0)) speed = 8;
+            if((Math.floor(Math.random() * 16) === 0)) speed = 20;
+            if((Math.floor(Math.random() * 2) === 0)) {
               raptor.dino.body.velocity.x -= speed;
             } else {
               raptor.dino.body.velocity.x += speed;
@@ -406,7 +430,7 @@ Game.Level1.prototype = {
             }
           }
           if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) == 0)) {
+            if((Math.floor(Math.random() * 5) === 0)) {
               raptor.dino.body.velocity.y -= 500;
             }
             raptor.dino.body.velocity.x -= 10;
@@ -415,7 +439,7 @@ Game.Level1.prototype = {
             raptor.dino.body.velocity.y += 400;
             raptor.dino.body.velocity.x += 40;
           }
-          if((Math.floor(Math.random() * 800) == 0)) {
+          if((Math.floor(Math.random() * 800) === 0)) {
             raptor.dino.body.velocity.x += 30;
             raptor.dino.body.position.y -= 80;
           }
@@ -426,14 +450,14 @@ Game.Level1.prototype = {
           }
         } else {
           if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
-            var speed = 3;
-            if((Math.floor(Math.random() * 2) == 0)) speed = 4;
-            if((Math.floor(Math.random() * 3) == 0)) speed = 8;
-            if((Math.floor(Math.random() * 16) == 0)) speed = 20;
-            if((Math.floor(Math.random() * 2) == 0)) {
-              raptor.dino.body.velocity.x += speed;
+            var raptorSpeed = 3;
+            if((Math.floor(Math.random() * 2) === 0)) raptorSpeed = 4;
+            if((Math.floor(Math.random() * 3) === 0)) raptorSpeed = 8;
+            if((Math.floor(Math.random() * 16) === 0)) raptorSpeed = 20;
+            if((Math.floor(Math.random() * 2) === 0)) {
+              raptor.dino.body.velocity.x += raptorSpeed;
             } else {
-              raptor.dino.body.velocity.x -= speed;
+              raptor.dino.body.velocity.x -= raptorSpeed;
             }
 
           }
@@ -444,7 +468,7 @@ Game.Level1.prototype = {
             }
           }
           if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) == 0)) {
+            if((Math.floor(Math.random() * 5) === 0)) {
               raptor.dino.body.velocity.y -= 500;
             }
             raptor.dino.body.velocity.x += 10;
