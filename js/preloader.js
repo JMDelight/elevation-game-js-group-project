@@ -25,6 +25,7 @@ Game.Preloader.prototype = {
     this.load.spritesheet('buttons', '../assets/button_sprite_sheet.png', 193, 71);
 
     this.load.image('laser', '../assets/laser.png');
+    this.load.image('badge', '../assets/badge.png');
   },
 
   create:function(){

@@ -38,6 +38,7 @@ var button;
 
 var shootTime = 0;
 var lasers;
+var badges;
 
 
 Game.Level1.prototype = {
@@ -79,6 +80,8 @@ Game.Level1.prototype = {
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
       wallSlide: this.input.keyboard.addKey(Phaser.Keyboard.F),
       shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP),
+      shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
+      shootRight: this.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
 
     };
 
@@ -91,19 +94,26 @@ Game.Level1.prototype = {
     enemy1 = new EnemyBird(0, game, player.x + 190, player.y - 280);
 
     lasers = game.add.group();
-
     lasers.enableBody = true;
     lasers.physicsBodyType = Phaser.Physics.ARCADE;
     lasers.createMultiple(5, 'laser');
-
     lasers.setAll('anchor.x', 0.5);
     lasers.setAll('anchor.y', 0.5);
-
     lasers.setAll('scale.x', 0.5);
     lasers.setAll('scale.y', 0.5);
-
     lasers.setAll('outOfBoundsKill', true);
     lasers.setAll('checkWorldBounds', true);
+
+    badges = game.add.group();
+    badges.enableBody = true;
+    badges.physicsBodyType = Phaser.Physics.ARCADE;
+    badges.createMultiple(5, 'badge');
+    badges.setAll('anchor.x', 0.5);
+    badges.setAll('anchor.y', 0.5);
+    badges.setAll('scale.x', 0.5);
+    badges.setAll('scale.y', 0.5);
+    badges.setAll('outOfBoundsKill', true);
+    badges.setAll('checkWorldBounds', true);
   },
 
 
@@ -241,6 +251,18 @@ Game.Level1.prototype = {
     if(checkOverlap(lasers, enemy1.bird)) {
       enemy1.bird.kill();
     }
+
+    if (controls.shootLeft.isDown) {
+      this.shootBadge("left");
+    }
+
+    if (controls.shootRight.isDown) {
+      this.shootBadge("right");
+    }
+
+    if(checkOverlap(badges, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
   },
 
 
@@ -292,6 +314,21 @@ Game.Level1.prototype = {
         laser.body.velocity.y = -600;
 
         shootTime = this.time.now + 900;
+      }
+    }
+  },
+
+  shootBadge: function(direction) {
+    if(this.time.now > shootTime) {
+      badge = badges.getFirstExists(false);
+      if(badge){
+        var leftOrRightVelocity = 220;
+        if(direction === "left") leftOrRightVelocity *= -1;
+        badge.reset(player.x, player.y);
+        badge.body.velocity.y = -620;
+        badge.body.velocity.x = leftOrRightVelocity;
+
+        shootTime = this.time.now + 700;
       }
     }
   }
