@@ -39,6 +39,8 @@ var button;
 var shootTime = 0;
 var lasers;
 var badges;
+var bombomTime = 0;
+var bomboms;
 
 
 Game.Level1.prototype = {
@@ -79,9 +81,10 @@ Game.Level1.prototype = {
       left: this.input.keyboard.addKey(Phaser.Keyboard.A),
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
       wallSlide: this.input.keyboard.addKey(Phaser.Keyboard.F),
-      shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP),
-      shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-      shootRight: this.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
+      shoot: this.input.keyboard.addKey(Phaser.Keyboard.I),
+      shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.J),
+      shootRight: this.input.keyboard.addKey(Phaser.Keyboard.L),
+      bombom: this.input.keyboard.addKey(Phaser.Keyboard.K),
 
     };
 
@@ -114,6 +117,17 @@ Game.Level1.prototype = {
     badges.setAll('scale.y', 0.5);
     badges.setAll('outOfBoundsKill', true);
     badges.setAll('checkWorldBounds', true);
+
+    bomboms = game.add.group();
+    bomboms.enableBody = true;
+    // bomboms.physicsBodyType = Phaser.Physics.ARCADE;
+    bomboms.createMultiple(5, 'bombom');
+    bomboms.setAll('anchor.x', 0.5);
+    bomboms.setAll('anchor.y', 0.5);
+    bomboms.setAll('scale.x', 0.5);
+    bomboms.setAll('scale.y', 0.5);
+    bomboms.setAll('outOfBoundsKill', true);
+    bomboms.setAll('checkWorldBounds', true);
   },
 
 
@@ -263,6 +277,14 @@ Game.Level1.prototype = {
     if(checkOverlap(badges, enemy1.bird)) {
       enemy1.bird.kill();
     }
+
+    if (controls.bombom.isDown) {
+      this.dropBombom();
+    }
+
+    if(checkOverlap(bomboms, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
   },
 
 
@@ -329,6 +351,18 @@ Game.Level1.prototype = {
         badge.body.velocity.x = leftOrRightVelocity;
 
         shootTime = this.time.now + 700;
+      }
+    }
+  },
+
+  dropBombom: function() {
+    if(this.time.now > bombomTime) {
+      bombom = bomboms.getFirstExists(false);
+      if(bombom){
+        bombom.reset(player.x, player.y);
+        bombom.body.velocity.y = 0;
+        bombom.body.velocity.x = 0;
+        bombomTime = this.time.now + 5000;
       }
     }
   }
