@@ -10,7 +10,15 @@ function Map(numberOfRows, numberOfColumns, startingRow, endingRow, rows) {
 }
 
 Map.prototype.output = function() {
-  var outputString = "";
+  var workingOutputString = "";
+  for(var mapColumn = 0; mapColumn < this.numberOfColumns; mapColumn ++) {
+    workingOutputString += "-1";
+    if (mapColumn !== this.numberOfColumns - 1) {
+      workingOutputString += ",";
+    }
+  }
+  workingOutputString += "\n";
+  var outputString = workingOutputString + workingOutputString;
   for(var mapRow = 0; mapRow < this.rows.length; mapRow ++) {
     outputString = outputString + this.rows[mapRow] + "\n";
   }

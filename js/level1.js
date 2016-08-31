@@ -11,7 +11,7 @@ EnemyBird = function(index,game,x,y) {
     y: this.bird.y + 50
   }, 2000, 'Linear', true, 0, 100, true);
 
-}
+};
 
 EnemyDino = function(index,game,x,y) {
   this.dino = game.add.sprite(x,y,'dino');
@@ -26,7 +26,7 @@ EnemyDino = function(index,game,x,y) {
   //   y: this.dino.y + 50
   // }, 2000, 'Linear', true, 0, 100, true);
 
-}
+};
 
 // Enemy = function (game_state, position, properties) {
 //   "use strict";
@@ -67,7 +67,7 @@ var layer;
 
 var player;
 var controls = {};
-var playerSpeed = 150;
+var playerSpeed = 300;
 var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
@@ -194,6 +194,7 @@ Game.Level1.prototype = {
 
 
   update:function(){
+    game.debug.text(game.time.fps || '--', 2, 14, "#000");
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.dino, layer);
@@ -449,7 +450,6 @@ Game.Level1.prototype = {
 
     }
 
-
   },
 
 
@@ -532,7 +532,7 @@ Game.Level1.prototype = {
     }
   }
 
-}
+};
 
 function checkOverlap(spriteA,spriteB) {
   var boundsA = spriteA.getBounds();
