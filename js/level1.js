@@ -108,10 +108,10 @@ Game.Level1.prototype = {
 
     map.setCollisionBetween(0,6);
 
-    map.setTileIndexCallback(2, this.resetPlayer, this);
-    map.setTileIndexCallback(3, this.resetPlayer, this);
-    map.setTileIndexCallback(4, this.resetPlayer, this);
-    map.setTileIndexCallback(5, this.resetPlayer, this);
+    // map.setTileIndexCallback(2, this.resetPlayer, this);
+    // map.setTileIndexCallback(3, this.resetPlayer, this);
+    // map.setTileIndexCallback(4, this.resetPlayer, this);
+    // map.setTileIndexCallback(5, this.resetPlayer, this);
     map.setTileIndexCallback(6, this.resetPlayer, this);
 
 
