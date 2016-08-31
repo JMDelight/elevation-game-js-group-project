@@ -94,6 +94,8 @@ var dinoCounterPrev = 0;
 
 var raptorHouseCount = 0;
 
+var mostRecentLaser;
+
 
 
 Game.Level1.prototype = {
@@ -236,7 +238,6 @@ Game.Level1.prototype = {
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.dino, layer);
-
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
@@ -246,6 +247,8 @@ Game.Level1.prototype = {
         if(baddieHurtTimer === now + 800) {
           player.lifeCount --;
           console.log('OWIE!');
+          playerSpeed -= (10 - player.lifeCount) * 10;
+          console.log(playerSpeed);
         }
       }
     });
@@ -353,6 +356,7 @@ Game.Level1.prototype = {
       console.log(player);
       player.reset(100, 1400);
       player.lifeCount = 10;
+      playerSpeed = 300;
     }
 
     // if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
@@ -376,6 +380,14 @@ Game.Level1.prototype = {
     }
     if(checkOverlap(lasers, enemy2.dino)) {
       enemy2.dino.kill();
+    }
+    if(checkOverlap(lasers, player)) {
+      if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
+        player.lifeCount -= 2;
+        console.log("ouchheee wizz");
+        hurtTimer = self.time.now + 400;
+        playerSpeed -= (10 - player.lifeCount) * 15;
+      }
     }
 
     if (controls.shootLeft.isDown) {
@@ -504,6 +516,8 @@ Game.Level1.prototype = {
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
             console.log('OWIE!');
+            playerSpeed -= (10 - player.lifeCount) * 5;
+            console.log(playerSpeed);
           }
         }
       });
@@ -561,6 +575,7 @@ Game.Level1.prototype = {
 
         shootTime = this.time.now + 900;
       }
+      mostRecentLaser = laser;
     }
   },
 
