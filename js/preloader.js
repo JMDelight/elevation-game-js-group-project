@@ -17,7 +17,8 @@ Game.Preloader.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
 
     //LOAD ALL ASSETS
-    this.load.tilemap('map', '../basic-tilemap/ElevationGain.csv');
+    this.load.tilemap('map', '../basic-tilemap/jumping-playground.csv');
+    // this.load.tilemap('map', null, testingMapData, Phaser.Tilemap.CSV);
     this.load.image('tileset', '../tiled-files/BasicTileSet64x64.png');
     this.load.image('bird', '../assets/bird.png');
 
@@ -29,6 +30,7 @@ Game.Preloader.prototype = {
     this.load.image('bombom', '../assets/bombom.png');
 
     this.load.image('dino', '../assets/enemy.png');
+
   },
 
   create:function(){
