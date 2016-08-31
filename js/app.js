@@ -1,4 +1,5 @@
 var game;
+var abcde = "Hi there";
 
 $(function() {
   $('#start').click(function() {
