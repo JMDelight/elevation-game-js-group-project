@@ -36,6 +36,9 @@ var baddieHurtTimer = 0;
 
 var button;
 
+var shootTime = 0;
+var lasers;
+
 
 Game.Level1.prototype = {
   create:function() {
@@ -75,6 +78,7 @@ Game.Level1.prototype = {
       left: this.input.keyboard.addKey(Phaser.Keyboard.A),
       up: this.input.keyboard.addKey(Phaser.Keyboard.W),
       wallSlide: this.input.keyboard.addKey(Phaser.Keyboard.F),
+      shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP),
 
     };
 
@@ -85,6 +89,21 @@ Game.Level1.prototype = {
     // button.fixedToCamera = true;
 
     enemy1 = new EnemyBird(0, game, player.x + 190, player.y - 280);
+
+    lasers = game.add.group();
+
+    lasers.enableBody = true;
+    lasers.physicsBodyType = Phaser.Physics.ARCADE;
+    lasers.createMultiple(5, 'laser');
+
+    lasers.setAll('anchor.x', 0.5);
+    lasers.setAll('anchor.y', 0.5);
+
+    lasers.setAll('scale.x', 0.5);
+    lasers.setAll('scale.y', 0.5);
+
+    lasers.setAll('outOfBoundsKill', true);
+    lasers.setAll('checkWorldBounds', true);
   },
 
 
@@ -203,6 +222,14 @@ Game.Level1.prototype = {
       }
 
     }
+
+    if (controls.shoot.isDown) {
+      this.shootLaser();
+    }
+
+    if(checkOverlap(lasers, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
   },
 
 
@@ -243,6 +270,19 @@ Game.Level1.prototype = {
       hurtTimer = this.time.now + 400;
     }
 
+  },
+
+  shootLaser: function() {
+    if(this.time.now > shootTime) {
+      laser = lasers.getFirstExists(false);
+      if(laser){
+        laser.reset(player.x, player.y);
+
+        laser.body.velocity.y = -600;
+
+        shootTime = this.time.now + 900;
+      }
+    }
   }
 
 }
