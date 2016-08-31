@@ -135,6 +135,7 @@ Game.Level1.prototype = {
       shootRight: this.input.keyboard.addKey(Phaser.Keyboard.L),
       bombom: this.input.keyboard.addKey(Phaser.Keyboard.K),
 
+
     };
 
     // button = this.add.button(this.world.centerX - 0, this.world.centerY + 700, 'buttons', function(){
@@ -189,6 +190,19 @@ Game.Level1.prototype = {
     // game.add.existing(enemy);
     // enemy = new Enemy(game, 684, 1123, -1, enemySpeed);
     // game.add.existing(enemy);
+    console.log(map.tiles[8]);
+    console.log(map);
+    console.log(map.getTile(1, 62));
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        // console.log(thisTile);
+        if (thisTile && thisTile.index === 8) {
+          console.log("Raptor home found!");
+          console.log("X: " + j + ", Y: " + i);
+        }
+      }
+    }
   },
 
 
