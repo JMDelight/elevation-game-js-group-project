@@ -13,7 +13,52 @@ EnemyBird = function(index,game,x,y) {
 
 }
 
+EnemyDino = function(index,game,x,y) {
+  this.dino = game.add.sprite(x,y,'dino');
+  this.dino.anchor.setTo(0.5,0.5);
+  this.dino.name = index.toString();
+  game.physics.enable(this.dino, Phaser.Physics.ARCADE);
+  this.dino.body.immovable = true;
+  this.dino.body.collideWorldBounds = true;
+  this.dino.body.allowGravity = true;
+
+  // this.dinoTween = game.add.tween(this.dino).to({
+  //   y: this.dino.y + 50
+  // }, 2000, 'Linear', true, 0, 100, true);
+
+}
+
+// Enemy = function (game_state, position, properties) {
+//   "use strict";
+//   Platformer.Prefab.call(this, game_state, position, properties);
+//
+//   this.walking_speed = +properties.walking_speed;
+//   this.walking_distance = +properties.walking_distance;
+//   this.previous_x = this.x;
+//   this.game_state.game.physics.arcade.enable(this);
+//   this.body.velocity.x = properties.direction * this.walking_speed;
+//
+//   this.scale.setTo(-properties.direction, 1);
+//
+//   this.anchor.setTo(0.5);
+// }
+//
+// Enemy.prototype = Object.create(.Prefab.prototype);
+// Enemy.prototype.constructor = Platformer.Enemy;
+//
+// Platformer.Enemy.prototype.update = function() {
+//   "use strict";
+//   this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
+//
+//   if (Math.abs(this.x - this.previous_x) >= this.walking_distance) {
+//     this.body.velocity.x *= -1;
+//     this.previous_x = this.x;
+//     this.scale.setTo(-this.scale.x, 1);
+//   }
+// }
+
 var enemy1;
+var enemy2;
 
 Game.Level1 = function(game) {};
 
@@ -41,6 +86,7 @@ var lasers;
 var badges;
 var bombomTime = 0;
 var bomboms;
+
 
 
 Game.Level1.prototype = {
@@ -96,6 +142,8 @@ Game.Level1.prototype = {
 
     enemy1 = new EnemyBird(0, game, player.x + 190, player.y - 280);
 
+    enemy2 = new EnemyDino(0, game, player.x + 400, player.y -280);
+
     lasers = game.add.group();
     lasers.enableBody = true;
     lasers.physicsBodyType = Phaser.Physics.ARCADE;
@@ -128,6 +176,16 @@ Game.Level1.prototype = {
     bomboms.setAll('scale.y', 0.5);
     bomboms.setAll('outOfBoundsKill', true);
     bomboms.setAll('checkWorldBounds', true);
+
+
+    // var enemy = new Enemy(game, 100, 124, 1, enemySpeed);
+    // game.add.existing(enemy);
+    // enemy = new Enemy(game, 384, 123, -1, enemySpeed);
+    // game.add.existing(enemy);
+    // enemy = new Enemy(game, 500, 500, 1, enemySpeed);
+    // game.add.existing(enemy);
+    // enemy = new Enemy(game, 684, 1123, -1, enemySpeed);
+    // game.add.existing(enemy);
   },
 
 
@@ -135,7 +193,17 @@ Game.Level1.prototype = {
   update:function(){
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
+    this.physics.arcade.collide(enemy2.dino, layer);
     this.physics.arcade.collide(player, enemy1.bird, function() {
+      if (now > baddieHurtTimer) {
+        baddieHurtTimer = now + 800;
+        if(baddieHurtTimer === now + 800) {
+          player.lifeCount --;
+          console.log('OWIE!');
+        }
+      }
+    });
+    this.physics.arcade.collide(player, enemy2.dino, function() {
       if (now > baddieHurtTimer) {
         baddieHurtTimer = now + 800;
         if(baddieHurtTimer === now + 800) {
@@ -265,6 +333,9 @@ Game.Level1.prototype = {
     if(checkOverlap(lasers, enemy1.bird)) {
       enemy1.bird.kill();
     }
+    if(checkOverlap(lasers, enemy2.dino)) {
+      enemy2.dino.kill();
+    }
 
     if (controls.shootLeft.isDown) {
       this.shootBadge("left");
@@ -277,6 +348,9 @@ Game.Level1.prototype = {
     if(checkOverlap(badges, enemy1.bird)) {
       enemy1.bird.kill();
     }
+    if(checkOverlap(badges, enemy2.dino)) {
+      enemy2.dino.kill();
+    }
 
     if (controls.bombom.isDown) {
       this.dropBombom();
@@ -285,6 +359,48 @@ Game.Level1.prototype = {
     if(checkOverlap(bomboms, enemy1.bird)) {
       enemy1.bird.kill();
     }
+    if(checkOverlap(bomboms, enemy2.dino)) {
+      enemy2.dino.kill();
+    }
+
+
+    ////dino
+    ////movement
+    if(!enemy2.dino.body.blocked.left && !enemy2.dino.body.blocked.right) {
+      var speed = 3;
+      if((Math.floor(Math.random() * 2) == 0)) speed = 4;
+      if((Math.floor(Math.random() * 3) == 0)) speed = 8;
+      if((Math.floor(Math.random() * 16) == 0)) speed = 20;
+      if((Math.floor(Math.random() * 2) == 0)) {
+        enemy2.dino.body.velocity.x -= speed;
+      } else {
+        enemy2.dino.body.velocity.x += speed;
+      }
+
+    }
+    if(enemy2.dino.body.blocked.left) {
+      enemy2.dino.body.velocity.x += 2;
+      if (!enemy2.dino.body.blocked.up) {
+        enemy2.dino.body.velocity.y -= 300;
+      }
+    }
+    if(enemy2.dino.body.touching.down || enemy2.dino.body.onFloor()) {
+      if((Math.floor(Math.random() * 5) == 0)) {
+        enemy2.dino.body.velocity.y -= 300;
+      }
+      enemy2.dino.body.velocity.x -= 10;
+    }
+    if(enemy2.dino.body.blocked.up) {
+      enemy2.dino.body.velocity.y += 400;
+      enemy2.dino.body.velocity.x += 40;
+    }
+    if((Math.floor(Math.random() * 800) == 0)) {
+      enemy2.dino.body.position.x += 340;
+      enemy2.dino.body.velocity.x += 30;
+      enemy2.dino.body.position.y -= 80;
+    }
+
+
   },
 
 
@@ -374,3 +490,24 @@ function checkOverlap(spriteA,spriteB) {
   var boundsB = spriteB.getBounds();
   return Phaser.Rectangle.intersects(boundsA, boundsB);
 }
+
+// Enemy = function(game, x, y, direction, speed) {
+//   Phaser.Sprite.call(this, game, x, y, "enemy");
+//   this.anchor.setTo(0.5);
+//   game.physics.enable(this, Phaser.Physics.ARCADE);
+//   this.xSpeed = direction * speed;
+// },
+//
+// Enemy.prototype = Object.create(Phaser.Sprite.Prototype);
+// Enemy.prototype.constructor = Enemy;
+//
+// Enemy.prototype.update = function() {
+//   game.physics.arcade.collide(this, layer, moveEnemy);
+//   this.body.velocity.x = this.xSpeed;
+// };
+//
+// function moveEnemy(enemy,platform) {
+//   if(enemy.xSpeed > 0 && enemy.x > platform.x + platform.width/2 || enemy.xSpeed<0 && enemy.x<platform.x-platform.width/2){
+// 		enemy.xSpeed*=-1;
+//   }
+// }
