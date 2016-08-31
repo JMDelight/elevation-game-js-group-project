@@ -4,7 +4,6 @@ Game.Preloader = function(game){
 
 var map;
 var layer;
-var testingMapData = "9,9,9,9\n9,9,9,1\n1,1,1,0";
 
 Game.Preloader.prototype = {
   preload:function(){
@@ -18,10 +17,10 @@ Game.Preloader.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
 
     //LOAD ALL ASSETS
-    this.load.tilemap('map', null, testingMapData, Phaser.Tilemap.CSV);
+    this.load.tilemap('map', '../basic-tilemap/jumping-playground.csv');
+    // this.load.tilemap('map', null, testingMapData, Phaser.Tilemap.CSV);
     this.load.image('tileset', '../tiled-files/BasicTileSet64x64.png');
     this.load.image('bird', '../assets/bird.png');
-    // game.this.cache.addTileMap('abd', null, testingMapData, Phaser.Tilemap.CSV);
 
     this.load.spritesheet('player', '../assets/dude.png', 32, 48);
     this.load.spritesheet('buttons', '../assets/button_sprite_sheet.png', 193, 71);
@@ -29,6 +28,7 @@ Game.Preloader.prototype = {
     this.load.image('laser', '../assets/laser.png');
     this.load.image('badge', '../assets/badge.png');
     this.load.image('bombom', '../assets/bombom.png');
+
   },
 
   create:function(){
