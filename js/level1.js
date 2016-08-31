@@ -109,7 +109,18 @@ Game.Level1.prototype = {
 
 
   update:function(){
+    var now = this.time.now;
     this.physics.arcade.collide(player,layer);
+    this.physics.arcade.collide(player, enemy1.bird, function() {
+      if (now > baddieHurtTimer) {
+        baddieHurtTimer = now + 800;
+        if(baddieHurtTimer === now + 800) {
+          player.lifeCount --;
+          console.log('OWIE!');
+        }
+      }
+    });
+
     if(this.time.now > wallJumpTimer) {
       player.body.velocity.x = 0;
     }
@@ -214,14 +225,14 @@ Game.Level1.prototype = {
       player.lifeCount = 10;
     }
 
-    if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
-      baddieHurtTimer = this.time.now + 800;
-      if(baddieHurtTimer === this.time.now + 800) {
-        player.lifeCount --;
-        console.log('OWIE!');
-      }
-
-    }
+    // if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
+    //   baddieHurtTimer = this.time.now + 800;
+    //   if(baddieHurtTimer === this.time.now + 800) {
+    //     player.lifeCount --;
+    //     console.log('OWIE!');
+    //   }
+    //
+    // }
 
     if (controls.shoot.isDown) {
       this.shootLaser();
