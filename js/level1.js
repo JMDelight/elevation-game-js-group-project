@@ -94,6 +94,8 @@ var dinoCounterPrev = 0;
 
 var raptorHouseCount = 0;
 
+var mostRecentLaser;
+
 
 
 Game.Level1.prototype = {
@@ -223,7 +225,7 @@ Game.Level1.prototype = {
       if (!raptor.dino.alive) {
         deadRaptors ++;
       }
-    })
+    });
     if(this.time.now % 300 === 0) {
       mapCoord.forEach(function(coordinates) {
         if(raptors.length - deadRaptors < raptorHouseCount * 3) {
@@ -376,6 +378,13 @@ Game.Level1.prototype = {
     if(checkOverlap(lasers, enemy2.dino)) {
       enemy2.dino.kill();
     }
+    if(checkOverlap(lasers, player)) {
+      if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
+        player.lifeCount -= 2;
+        console.log("ouchheee wizz");
+        hurtTimer = self.time.now + 400;
+      }
+    }
 
     if (controls.shootLeft.isDown) {
       this.shootBadge("left");
@@ -402,6 +411,8 @@ Game.Level1.prototype = {
     if(checkOverlap(bomboms, enemy2.dino)) {
       enemy2.dino.kill();
     }
+
+
 
 
     ////dino
@@ -561,6 +572,7 @@ Game.Level1.prototype = {
 
         shootTime = this.time.now + 900;
       }
+      mostRecentLaser = laser;
     }
   },
 
