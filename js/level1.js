@@ -87,6 +87,9 @@ var badges;
 var bombomTime = 0;
 var bomboms;
 
+var dinoCounter = 1;
+var dinoCounterPrev = 0;
+
 
 
 Game.Level1.prototype = {
@@ -140,9 +143,9 @@ Game.Level1.prototype = {
     //
     // button.fixedToCamera = true;
 
-    enemy1 = new EnemyBird(0, game, player.x + 190, player.y - 280);
+    enemy1 = new EnemyBird(0, game, player.x + 1190, player.y - 1280);
 
-    enemy2 = new EnemyDino(0, game, player.x + 400, player.y -280);
+    enemy2 = new EnemyDino(0, game, player.x + 1400, player.y -1280);
 
     lasers = game.add.group();
     lasers.enableBody = true;
@@ -366,38 +369,84 @@ Game.Level1.prototype = {
 
     ////dino
     ////movement
-    if(!enemy2.dino.body.blocked.left && !enemy2.dino.body.blocked.right) {
-      var speed = 3;
-      if((Math.floor(Math.random() * 2) == 0)) speed = 4;
-      if((Math.floor(Math.random() * 3) == 0)) speed = 8;
-      if((Math.floor(Math.random() * 16) == 0)) speed = 20;
-      if((Math.floor(Math.random() * 2) == 0)) {
-        enemy2.dino.body.velocity.x -= speed;
+    if ((Math.floor(Math.random() * 3) == 0)) {
+      if(dinoCounter > 0 && dinoCounter < 300 && dinoCounter !== dinoCounterPrev) {
+        if(!enemy2.dino.body.blocked.left && !enemy2.dino.body.blocked.right) {
+          var speed = 3;
+          if((Math.floor(Math.random() * 2) == 0)) speed = 4;
+          if((Math.floor(Math.random() * 3) == 0)) speed = 8;
+          if((Math.floor(Math.random() * 16) == 0)) speed = 20;
+          if((Math.floor(Math.random() * 2) == 0)) {
+            enemy2.dino.body.velocity.x -= speed;
+          } else {
+            enemy2.dino.body.velocity.x += speed;
+          }
+
+        }
+        if(enemy2.dino.body.blocked.left) {
+          enemy2.dino.body.velocity.x += 2;
+          if (!enemy2.dino.body.blocked.up) {
+            enemy2.dino.body.velocity.y -= 300;
+          }
+        }
+        if(enemy2.dino.body.touching.down || enemy2.dino.body.onFloor()) {
+          if((Math.floor(Math.random() * 5) == 0)) {
+            enemy2.dino.body.velocity.y -= 500;
+          }
+          enemy2.dino.body.velocity.x -= 10;
+        }
+        if(enemy2.dino.body.blocked.up) {
+          enemy2.dino.body.velocity.y += 400;
+          enemy2.dino.body.velocity.x += 40;
+        }
+        if((Math.floor(Math.random() * 800) == 0)) {
+          enemy2.dino.body.velocity.x += 30;
+          enemy2.dino.body.position.y -= 80;
+        }
+        dinoCounter ++;
+        dinoCounterPrev ++;
+        if(dinoCounter === 1) {
+          dinoCounterPrev --;
+        }
       } else {
-        enemy2.dino.body.velocity.x += speed;
+        if(!enemy2.dino.body.blocked.left && !enemy2.dino.body.blocked.right) {
+          var speed = 3;
+          if((Math.floor(Math.random() * 2) == 0)) speed = 4;
+          if((Math.floor(Math.random() * 3) == 0)) speed = 8;
+          if((Math.floor(Math.random() * 16) == 0)) speed = 20;
+          if((Math.floor(Math.random() * 2) == 0)) {
+            enemy2.dino.body.velocity.x += speed;
+          } else {
+            enemy2.dino.body.velocity.x -= speed;
+          }
+
+        }
+        if(enemy2.dino.body.blocked.left) {
+          enemy2.dino.body.velocity.x -= 2;
+          if (!enemy2.dino.body.blocked.up) {
+            enemy2.dino.body.velocity.y -= 300;
+          }
+        }
+        if(enemy2.dino.body.touching.down || enemy2.dino.body.onFloor()) {
+          if((Math.floor(Math.random() * 5) == 0)) {
+            enemy2.dino.body.velocity.y -= 500;
+          }
+          enemy2.dino.body.velocity.x += 10;
+        }
+        if(enemy2.dino.body.blocked.up) {
+          enemy2.dino.body.velocity.y += 400;
+          enemy2.dino.body.velocity.x -= 40;
+        }
+        if (dinoCounter === 300) dinoCounterPrev ++;
+        dinoCounter --;
+        dinoCounterPrev --;
+        if (dinoCounter === 1) {
+          dinoCounter = 1;
+          dinoCounterPrev = 0;
+        }
+
       }
 
-    }
-    if(enemy2.dino.body.blocked.left) {
-      enemy2.dino.body.velocity.x += 2;
-      if (!enemy2.dino.body.blocked.up) {
-        enemy2.dino.body.velocity.y -= 300;
-      }
-    }
-    if(enemy2.dino.body.touching.down || enemy2.dino.body.onFloor()) {
-      if((Math.floor(Math.random() * 5) == 0)) {
-        enemy2.dino.body.velocity.y -= 300;
-      }
-      enemy2.dino.body.velocity.x -= 10;
-    }
-    if(enemy2.dino.body.blocked.up) {
-      enemy2.dino.body.velocity.y += 400;
-      enemy2.dino.body.velocity.x += 40;
-    }
-    if((Math.floor(Math.random() * 800) == 0)) {
-      enemy2.dino.body.position.x += 340;
-      enemy2.dino.body.velocity.x += 30;
-      enemy2.dino.body.position.y -= 80;
     }
 
 
