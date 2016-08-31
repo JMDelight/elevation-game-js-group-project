@@ -355,6 +355,7 @@ Game.Level1.prototype = {
       console.log(player);
       player.reset(100, 1400);
       player.lifeCount = 10;
+      playerSpeed = 300;
     }
 
     // if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
