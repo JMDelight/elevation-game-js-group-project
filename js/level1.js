@@ -45,6 +45,8 @@ var bomboms;
 
 Game.Level1.prototype = {
   create:function() {
+    console.log(game.cache.checkImageKey('laser'));
+    debugger;
     this.stage.backgroundColor = '#FFBDBD';
 
     this.physics.arcade.gravity.y = 1400;
