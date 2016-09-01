@@ -118,7 +118,7 @@ Game.Level1.prototype = {
     // map.setTileIndexCallback(3, this.resetPlayer, this);
     // map.setTileIndexCallback(4, this.resetPlayer, this);
     // map.setTileIndexCallback(5, this.resetPlayer, this);
-    map.setTileIndexCallback(6, this.resetPlayer, this);
+    // map.setTileIndexCallback(9, this.resetPlayer, this);
 
 
     player = this.add.sprite(100,1400,'player');
@@ -557,8 +557,9 @@ Game.Level1.prototype = {
   // },
 
   resetPlayer: function(){
-    map.setCollisionBetween(0,6);
+    // map.setCollisionBetween(0,6);
     if(this.time.now > hurtTimer) {
+      console.log('lost one life');
       player.lifeCount --;
       hurtTimer = this.time.now + 400;
     }
