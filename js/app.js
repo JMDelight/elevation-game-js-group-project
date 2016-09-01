@@ -53,10 +53,17 @@ var createMap = function(elevationArray) {
 $(function() {
   $('#start').click(function() {
     $('#start').toggle();
+    $('.api-input').toggle();
     // generatedMap = elevationGain.stitch(elevationGain).stitch(testOne).stitch(elevationLoss).stitch(elevationLoss);
     // generatedMap = runningMap.stitch(runningMap);
     // generatedMap = testOne.stitch(testTwo).stitch(testOne);
-    generatedMap = createMap([0, 300, 750, 600, 400, 450, 200]);
+    if (elevations === []) {
+
+      generatedMap = createMap(elevations);
+    } else {
+      generatedMap = createMap([0, 300, 750, 600, 400, 450, 200]);
+      console.log("Yo");
+    }
     game = new Phaser.Game(800,600,Phaser.CANVAS,'');
     game.state.add('Boot',Game.Boot);
     game.state.add('Preloader',Game.Preloader);
