@@ -60,7 +60,9 @@ EnemyDino = function(index,game,x,y) {
 var enemy1;
 var enemy2;
 var raptors = [];
+var birds = [];
 var mapCoord = [];
+var birdMapCoord = [];
 
 Game.Level1 = function(game) {};
 
@@ -93,6 +95,7 @@ var dinoCounter = 1;
 var dinoCounterPrev = 0;
 
 var raptorHouseCount = 0;
+var birdHouseCount = 0;
 
 var mostRecentLaser;
 
@@ -211,6 +214,22 @@ Game.Level1.prototype = {
           raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
           console.log(raptors);
           mapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
+        }
+      }
+    }
+
+    console.log(map.tiles[7]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        // console.log(thisTile);
+        if (thisTile && thisTile.index === 7) {
+          console.log("Bird house found!");
+          birdHouseCount ++;
+          console.log("Y: " + j + ", X: " + i);
+          birds.push(new EnemyBird(birds.length, game, i * map.tileWidth + 32, j * map.tileHeight));
+          console.log(birds);
+          birdMapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
         }
       }
     }
