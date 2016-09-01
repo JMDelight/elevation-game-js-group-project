@@ -260,17 +260,20 @@ Game.Level1.prototype = {
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
-    this.physics.arcade.collide(player, enemy1.bird, function() {
-      if (now > baddieHurtTimer) {
-        baddieHurtTimer = now + 800;
-        if(baddieHurtTimer === now + 800) {
-          player.lifeCount --;
-          console.log('OWIE!');
-          playerSpeed -= (10 - player.lifeCount) * 10;
-          console.log(playerSpeed);
+    birds.forEach(function(bird) {
+      self.physics.arcade.collide(player, bird.bird, function() {
+        if (now > baddieHurtTimer) {
+          baddieHurtTimer = now + 800;
+          if(baddieHurtTimer === now + 800) {
+            player.lifeCount --;
+            console.log('OWIE!');
+            playerSpeed -= (10 - player.lifeCount) * 10;
+            console.log(playerSpeed);
+          }
         }
-      }
+      });
     });
+
 
 
     if(this.time.now > wallJumpTimer) {
@@ -435,6 +438,29 @@ Game.Level1.prototype = {
       enemy2.dino.kill();
     }
 
+
+    birds.forEach(function(bird) {
+      if(checkOverlap(lasers, bird.bird)) {
+        bird.bird.kill();
+      }
+      if(checkOverlap(badges, bird.bird)) {
+        bird.bird.kill();
+      }
+      if(checkOverlap(bomboms, bird.bird)) {
+        bird.bird.kill();
+      }
+      // self.physics.arcade.collide(player, bird.bird, function() {
+      //   if (now > baddieHurtTimer) {
+      //     baddieHurtTimer = now + 800;
+      //     if(baddieHurtTimer === now + 800) {
+      //       player.lifeCount --;
+      //       console.log('OWIE!');
+      //       playerSpeed -= (10 - player.lifeCount) * 5;
+      //       console.log(playerSpeed);
+      //     }
+      //   }
+      // });
+    })
 
     ////dino
     ////movement
