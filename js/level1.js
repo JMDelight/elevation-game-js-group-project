@@ -21,44 +21,9 @@ EnemyDino = function(index,game,x,y) {
   this.dino.body.immovable = true;
   this.dino.body.collideWorldBounds = true;
   this.dino.body.allowGravity = true;
-
-  // this.dinoTween = game.add.tween(this.dino).to({
-  //   y: this.dino.y + 50
-  // }, 2000, 'Linear', true, 0, 100, true);
-
 };
 
-// Enemy = function (game_state, position, properties) {
-//   "use strict";
-//   Platformer.Prefab.call(this, game_state, position, properties);
-//
-//   this.walking_speed = +properties.walking_speed;
-//   this.walking_distance = +properties.walking_distance;
-//   this.previous_x = this.x;
-//   this.game_state.game.physics.arcade.enable(this);
-//   this.body.velocity.x = properties.direction * this.walking_speed;
-//
-//   this.scale.setTo(-properties.direction, 1);
-//
-//   this.anchor.setTo(0.5);
-// }
-//
-// Enemy.prototype = Object.create(.Prefab.prototype);
-// Enemy.prototype.constructor = Platformer.Enemy;
-//
-// Platformer.Enemy.prototype.update = function() {
-//   "use strict";
-//   this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
-//
-//   if (Math.abs(this.x - this.previous_x) >= this.walking_distance) {
-//     this.body.velocity.x *= -1;
-//     this.previous_x = this.x;
-//     this.scale.setTo(-this.scale.x, 1);
-//   }
-// }
 
-var enemy1;
-var enemy2;
 var raptors = [];
 var birds = [];
 var mapCoord = [];
@@ -154,9 +119,6 @@ Game.Level1.prototype = {
     //
     // button.fixedToCamera = true;
 
-    enemy1 = new EnemyBird(0, game, player.x + 1190, player.y - 1280);
-
-    enemy2 = new EnemyDino(0, game, player.x + 1400, player.y -1280);
 
     lasers = game.add.group();
     lasers.enableBody = true;
@@ -256,7 +218,6 @@ Game.Level1.prototype = {
 
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
-    this.physics.arcade.collide(enemy2.dino, layer);
     raptors.forEach(function(raptor) {
       self.physics.arcade.collide(raptor.dino, layer);
     });
@@ -381,14 +342,6 @@ Game.Level1.prototype = {
       playerSpeed = 300;
     }
 
-    // if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
-    //   baddieHurtTimer = this.time.now + 800;
-    //   if(baddieHurtTimer === this.time.now + 800) {
-    //     player.lifeCount --;
-    //     console.log('OWIE!');
-    //   }
-    //
-    // }
     if (controls.test.isDown) {
       console.log(raptors);
     }
@@ -397,12 +350,6 @@ Game.Level1.prototype = {
       this.shootLaser();
     }
 
-    if(checkOverlap(lasers, enemy1.bird)) {
-      enemy1.bird.kill();
-    }
-    if(checkOverlap(lasers, enemy2.dino)) {
-      enemy2.dino.kill();
-    }
     if(checkOverlap(lasers, player)) {
       if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
         player.lifeCount -= 2;
@@ -420,22 +367,9 @@ Game.Level1.prototype = {
       this.shootBadge("right");
     }
 
-    if(checkOverlap(badges, enemy1.bird)) {
-      enemy1.bird.kill();
-    }
-    if(checkOverlap(badges, enemy2.dino)) {
-      enemy2.dino.kill();
-    }
 
     if (controls.bombom.isDown) {
       this.dropBombom();
-    }
-
-    if(checkOverlap(bomboms, enemy1.bird)) {
-      enemy1.bird.kill();
-    }
-    if(checkOverlap(bomboms, enemy2.dino)) {
-      enemy2.dino.kill();
     }
 
 
@@ -449,17 +383,6 @@ Game.Level1.prototype = {
       if(checkOverlap(bomboms, bird.bird)) {
         bird.bird.kill();
       }
-      // self.physics.arcade.collide(player, bird.bird, function() {
-      //   if (now > baddieHurtTimer) {
-      //     baddieHurtTimer = now + 800;
-      //     if(baddieHurtTimer === now + 800) {
-      //       player.lifeCount --;
-      //       console.log('OWIE!');
-      //       playerSpeed -= (10 - player.lifeCount) * 5;
-      //       console.log(playerSpeed);
-      //     }
-      //   }
-      // });
     })
 
     ////dino
@@ -571,36 +494,6 @@ Game.Level1.prototype = {
   },
 
 
-  // resetPlayerLeftSpike: function(){
-  //   player.lifeCount --;
-  //   player.position.x -= 60;
-  //   player.position.y -= 12;
-  // },
-  //
-  // resetPlayerTopSpike: function(){
-  //   player.lifeCount --;
-  //   player.position.x -= 60;
-  //   player.position.y -= 12;
-  // },
-  //
-  // resetPlayerBottomSpike: function(){
-  //   player.lifeCount --;
-  //   player.position.x -= 60;
-  //   player.position.y -= 12;
-  // },
-  //
-  // resetPlayerRightSpike: function(){
-  //   player.lifeCount --;
-  //   player.position.x -= 60;
-  //   player.position.y -= 12;
-  // },
-  //
-  // resetPlayerAllSpike: function(){
-  //   player.lifeCount --;
-  //   player.position.x -= 60;
-  //   player.position.y -= 12;
-  // },
-
   resetPlayer: function(){
     // map.setCollisionBetween(0,6);
     if(this.time.now > hurtTimer) {
@@ -659,24 +552,3 @@ function checkOverlap(spriteA,spriteB) {
   var boundsB = spriteB.getBounds();
   return Phaser.Rectangle.intersects(boundsA, boundsB);
 }
-
-// Enemy = function(game, x, y, direction, speed) {
-//   Phaser.Sprite.call(this, game, x, y, "enemy");
-//   this.anchor.setTo(0.5);
-//   game.physics.enable(this, Phaser.Physics.ARCADE);
-//   this.xSpeed = direction * speed;
-// },
-//
-// Enemy.prototype = Object.create(Phaser.Sprite.Prototype);
-// Enemy.prototype.constructor = Enemy;
-//
-// Enemy.prototype.update = function() {
-//   game.physics.arcade.collide(this, layer, moveEnemy);
-//   this.body.velocity.x = this.xSpeed;
-// };
-//
-// function moveEnemy(enemy,platform) {
-//   if(enemy.xSpeed > 0 && enemy.x > platform.x + platform.width/2 || enemy.xSpeed<0 && enemy.x<platform.x-platform.width/2){
-// 		enemy.xSpeed*=-1;
-//   }
-// }
