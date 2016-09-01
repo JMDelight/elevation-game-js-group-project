@@ -11,7 +11,7 @@ EnemyBird = function(index,game,x,y) {
     y: this.bird.y + 50
   }, 2000, 'Linear', true, 0, 100, true);
 
-}
+};
 
 EnemyBug = function(index,game,x,y) {
   this.bug = game.add.sprite(x,y,'bug');
@@ -29,7 +29,7 @@ EnemyBug = function(index,game,x,y) {
   //   y: this.bug.y + 50
   // }, 2000, 'Linear', true, 0, 100, true);
 
-}
+};
 
 // Enemy = function (game_state, position, properties) {
 //   "use strict";
@@ -63,6 +63,7 @@ EnemyBug = function(index,game,x,y) {
 var enemy1;
 var enemy2;
 var bugs = [];
+var mapCoord = [];
 
 Game.Level1 = function(game) {};
 
@@ -71,7 +72,7 @@ var layer;
 
 var player;
 var controls = {};
-var playerSpeed = 150;
+var playerSpeed = 300;
 var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
@@ -93,6 +94,10 @@ var bomboms;
 
 var bugCounter = 1;
 var bugCounterPrev = 0;
+
+var beetleHouseCount = 0;
+
+var mostRecentLaser;
 
 
 
@@ -138,6 +143,7 @@ Game.Level1.prototype = {
       shootLeft: this.input.keyboard.addKey(Phaser.Keyboard.J),
       shootRight: this.input.keyboard.addKey(Phaser.Keyboard.L),
       bombom: this.input.keyboard.addKey(Phaser.Keyboard.K),
+      test: this.input.keyboard.addKey(Phaser.Keyboard.T),
 
 
     };
@@ -216,6 +222,22 @@ Game.Level1.prototype = {
 
 
   update:function(){
+
+    var self = this;
+    var deadbugs = 0;
+    bugs.forEach(function(beetle) {
+      if (!beetle.bug.alive) {
+        deadbugs ++;
+      }
+    });
+    if(this.time.now % 300 === 0) {
+      mapCoord.forEach(function(coordinates) {
+        if(bugs.length - deadbugs < beetleHouseCount * 3) {
+          bugs.push(new EnemyDino(bugs.length, game, coordinates[0], coordinates[1]));
+        }
+      });
+    }
+
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
     this.physics.arcade.collide(enemy2.bug, layer);
@@ -229,6 +251,8 @@ Game.Level1.prototype = {
         if(baddieHurtTimer === now + 800) {
           player.lifeCount --;
           console.log('OWIE!');
+          playerSpeed -= (10 - player.lifeCount) * 10;
+          console.log(playerSpeed);
         }
       }
     });
@@ -336,6 +360,7 @@ Game.Level1.prototype = {
       console.log(player);
       player.reset(100, 1400);
       player.lifeCount = 10;
+      playerSpeed = 300;
     }
 
     // if (checkOverlap(player, enemy1.bird) && this.time.now > baddieHurtTimer) {
@@ -346,6 +371,9 @@ Game.Level1.prototype = {
     //   }
     //
     // }
+    if (controls.test.isDown) {
+      console.log(bugs);
+    }
 
     if (controls.shoot.isDown) {
       this.shootLaser();
@@ -356,6 +384,14 @@ Game.Level1.prototype = {
     }
     if(checkOverlap(lasers, enemy2.bug)) {
       enemy2.bug.kill();
+    }
+    if(checkOverlap(lasers, player)) {
+      if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
+        player.lifeCount -= 2;
+        console.log("ouchheee wizz");
+        hurtTimer = self.time.now + 400;
+        playerSpeed -= (10 - player.lifeCount) * 15;
+      }
     }
 
     if (controls.shootLeft.isDown) {
@@ -500,11 +536,12 @@ Game.Level1.prototype = {
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
             console.log('OWIE!');
+            playerSpeed -= (10 - player.lifeCount) * 5;
+            console.log(playerSpeed);
           }
         }
       });
     });
-
 
   },
 
@@ -558,6 +595,7 @@ Game.Level1.prototype = {
 
         shootTime = this.time.now + 900;
       }
+      mostRecentLaser = laser;
     }
   },
 
@@ -588,7 +626,7 @@ Game.Level1.prototype = {
     }
   }
 
-}
+};
 
 function checkOverlap(spriteA,spriteB) {
   var boundsA = spriteA.getBounds();
