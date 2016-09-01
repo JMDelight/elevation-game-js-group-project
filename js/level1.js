@@ -13,17 +13,20 @@ EnemyBird = function(index,game,x,y) {
 
 }
 
-EnemyDino = function(index,game,x,y) {
-  this.dino = game.add.sprite(x,y,'dino');
-  this.dino.anchor.setTo(0.5,0.5);
-  this.dino.name = index.toString();
-  game.physics.enable(this.dino, Phaser.Physics.ARCADE);
-  this.dino.body.immovable = true;
-  this.dino.body.collideWorldBounds = true;
-  this.dino.body.allowGravity = true;
+EnemyBug = function(index,game,x,y) {
+  this.bug = game.add.sprite(x,y,'bug');
+  this.bug.anchor.setTo(0.5,0.5);
+  this.bug.name = index.toString();
+  game.physics.enable(this.bug, Phaser.Physics.ARCADE);
+  this.bug.body.immovable = true;
+  this.bug.body.collideWorldBounds = true;
+  this.bug.body.allowGravity = true;
 
-  // this.dinoTween = game.add.tween(this.dino).to({
-  //   y: this.dino.y + 50
+
+
+
+  // this.bugTween = game.add.tween(this.bug).to({
+  //   y: this.bug.y + 50
   // }, 2000, 'Linear', true, 0, 100, true);
 
 }
@@ -59,7 +62,7 @@ EnemyDino = function(index,game,x,y) {
 
 var enemy1;
 var enemy2;
-var raptors = [];
+var bugs = [];
 
 Game.Level1 = function(game) {};
 
@@ -88,8 +91,8 @@ var badges;
 var bombomTime = 0;
 var bomboms;
 
-var dinoCounter = 1;
-var dinoCounterPrev = 0;
+var bugCounter = 1;
+var bugCounterPrev = 0;
 
 
 
@@ -147,7 +150,9 @@ Game.Level1.prototype = {
 
     enemy1 = new EnemyBird(0, game, player.x + 1190, player.y - 1280);
 
-    enemy2 = new EnemyDino(0, game, player.x + 1400, player.y -1280);
+    enemy2 = new EnemyBug(0, game, player.x + 1400, player.y -1280);
+    enemy2.bug.animations.add('left',[10,11,12,13,14,15],30,true);
+    enemy2.bug.animations.add('jump',[2,3,4,5,6,7,8,9],30,true);
 
     lasers = game.add.group();
     lasers.enableBody = true;
@@ -199,10 +204,10 @@ Game.Level1.prototype = {
         var thisTile = map.getTile(i, j);
         // console.log(thisTile);
         if (thisTile && thisTile.index === 8) {
-          console.log("Raptor home found!");
+          console.log("Bug home found!");
           console.log("Y: " + j + ", X: " + i);
-          raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
-          console.log(raptors);
+          bugs.push(new EnemyBug(bugs.length, game, i * map.tileWidth + 32, j * map.tileHeight));
+          console.log(bugs);
         }
       }
     }
@@ -213,10 +218,10 @@ Game.Level1.prototype = {
   update:function(){
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
-    this.physics.arcade.collide(enemy2.dino, layer);
+    this.physics.arcade.collide(enemy2.bug, layer);
     var self = this;
-    raptors.forEach(function(raptor) {
-      self.physics.arcade.collide(raptor.dino, layer);
+    bugs.forEach(function(beetle) {
+      self.physics.arcade.collide(beetle.bug, layer);
     });
     this.physics.arcade.collide(player, enemy1.bird, function() {
       if (now > baddieHurtTimer) {
@@ -349,8 +354,8 @@ Game.Level1.prototype = {
     if(checkOverlap(lasers, enemy1.bird)) {
       enemy1.bird.kill();
     }
-    if(checkOverlap(lasers, enemy2.dino)) {
-      enemy2.dino.kill();
+    if(checkOverlap(lasers, enemy2.bug)) {
+      enemy2.bug.kill();
     }
 
     if (controls.shootLeft.isDown) {
@@ -364,8 +369,8 @@ Game.Level1.prototype = {
     if(checkOverlap(badges, enemy1.bird)) {
       enemy1.bird.kill();
     }
-    if(checkOverlap(badges, enemy2.dino)) {
-      enemy2.dino.kill();
+    if(checkOverlap(badges, enemy2.bug)) {
+      enemy2.bug.kill();
     }
 
     if (controls.bombom.isDown) {
@@ -375,105 +380,121 @@ Game.Level1.prototype = {
     if(checkOverlap(bomboms, enemy1.bird)) {
       enemy1.bird.kill();
     }
-    if(checkOverlap(bomboms, enemy2.dino)) {
-      enemy2.dino.kill();
+    if(checkOverlap(bomboms, enemy2.bug)) {
+      enemy2.bug.kill();
     }
 
 
-    ////dino
+    ////bug
     ////movement
     var self = this;
-    raptors.forEach(function(raptor) {
+    bugs.forEach(function(beetle) {
       if ((Math.floor(Math.random() * 3) == 0)) {
-        if(dinoCounter > 0 && dinoCounter < 300 && dinoCounter !== dinoCounterPrev) {
-          if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
+        if(bugCounter > 0 && bugCounter < 300 && bugCounter !== bugCounterPrev) {
+          if(!beetle.bug.body.blocked.left && !beetle.bug.body.blocked.right) {
             var speed = 3;
             if((Math.floor(Math.random() * 2) == 0)) speed = 4;
             if((Math.floor(Math.random() * 3) == 0)) speed = 8;
             if((Math.floor(Math.random() * 16) == 0)) speed = 20;
             if((Math.floor(Math.random() * 2) == 0)) {
-              raptor.dino.body.velocity.x -= speed;
+              beetle.bug.body.velocity.x -= speed;
+              beetle.bug.animations.play('left');
             } else {
-              raptor.dino.body.velocity.x += speed;
+              beetle.bug.body.velocity.x += speed;
+              beetle.bug.animations.play('left');
+              beetle.bug.scale.x *= -1;
             }
 
           }
-          if(raptor.dino.body.blocked.left) {
-            raptor.dino.body.velocity.x += 2;
-            if (!raptor.dino.body.blocked.up) {
-              raptor.dino.body.velocity.y -= 300;
+          if(beetle.bug.body.blocked.left) {
+            beetle.bug.body.velocity.x += 2;
+            if (!beetle.bug.body.blocked.up) {
+              beetle.bug.body.velocity.y -= 300;
             }
           }
-          if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) == 0)) {
-              raptor.dino.body.velocity.y -= 500;
+          if(beetle.bug.body.touching.down || beetle.bug.body.onFloor()) {
+            if((Math.floor(Math.random() * 20) == 0)) {
+              beetle.bug.body.velocity.y -= 500;
+              if(beetle.bug.body.velocity.x > 0) {
+                beetle.bug.animations.play('jump');
+                beetle.bug.scale.x *= -1;
+              } else if(beetle.bug.body.velocity.x <= 0) {
+                beetle.bug.animations.play('jump');
+              }
             }
-            raptor.dino.body.velocity.x -= 10;
+            beetle.bug.body.velocity.x -= 10;
           }
-          if(raptor.dino.body.blocked.up) {
-            raptor.dino.body.velocity.y += 400;
-            raptor.dino.body.velocity.x += 40;
+          if(beetle.bug.body.blocked.up) {
+            beetle.bug.body.velocity.y += 400;
+            beetle.bug.body.velocity.x += 40;
           }
           if((Math.floor(Math.random() * 800) == 0)) {
-            raptor.dino.body.velocity.x += 30;
-            raptor.dino.body.position.y -= 80;
+            beetle.bug.body.velocity.x += 30;
+            beetle.bug.body.position.y -= 80;
           }
-          dinoCounter ++;
-          dinoCounterPrev ++;
-          if(dinoCounter === 1) {
-            dinoCounterPrev --;
+          bugCounter ++;
+          bugCounterPrev ++;
+          if(bugCounter === 1) {
+            bugCounterPrev --;
           }
         } else {
-          if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
+          if(!beetle.bug.body.blocked.left && !beetle.bug.body.blocked.right) {
             var speed = 3;
             if((Math.floor(Math.random() * 2) == 0)) speed = 4;
             if((Math.floor(Math.random() * 3) == 0)) speed = 8;
             if((Math.floor(Math.random() * 16) == 0)) speed = 20;
             if((Math.floor(Math.random() * 2) == 0)) {
-              raptor.dino.body.velocity.x += speed;
+              beetle.bug.body.velocity.x += speed;
             } else {
-              raptor.dino.body.velocity.x -= speed;
+              beetle.bug.body.velocity.x -= speed;
             }
 
           }
-          if(raptor.dino.body.blocked.left) {
-            raptor.dino.body.velocity.x -= 2;
-            if (!raptor.dino.body.blocked.up) {
-              raptor.dino.body.velocity.y -= 300;
+          if(beetle.bug.body.blocked.left) {
+            beetle.bug.body.velocity.x -= 2;
+            if (!beetle.bug.body.blocked.up) {
+              beetle.bug.body.velocity.y -= 300;
             }
           }
-          if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) == 0)) {
-              raptor.dino.body.velocity.y -= 500;
+          if(beetle.bug.body.touching.down || beetle.bug.body.onFloor()) {
+            if(beetle.bug.body.x )
+            if((Math.floor(Math.random() * 20) == 0)) {
+              beetle.bug.body.velocity.y -= 500;
+              if(beetle.bug.body.velocity.x > 0) {
+                beetle.bug.animations.play('jump');
+                beetle.bug.scale.x *= -1;
+              } else if(beetle.bug.body.velocity.x <= 0) {
+                beetle.bug.animations.play('jump');
+              }
             }
-            raptor.dino.body.velocity.x += 10;
+            beetle.bug.body.velocity.x += 10;
           }
-          if(raptor.dino.body.blocked.up) {
-            raptor.dino.body.velocity.y += 400;
-            raptor.dino.body.velocity.x -= 40;
+          if(beetle.bug.body.blocked.up) {
+            beetle.bug.body.velocity.y += 400;
+            beetle.bug.body.velocity.x -= 40;
           }
-          if (dinoCounter === 300) dinoCounterPrev ++;
-          dinoCounter --;
-          dinoCounterPrev --;
-          if (dinoCounter === 1) {
-            dinoCounter = 1;
-            dinoCounterPrev = 0;
+          if (bugCounter === 300) bugCounterPrev ++;
+          bugCounter --;
+          bugCounterPrev --;
+          if (bugCounter === 1) {
+            bugCounter = 1;
+            bugCounterPrev = 0;
           }
 
         }
 
       }
 
-      if(checkOverlap(lasers, raptor.dino)) {
-        raptor.dino.kill();
+      if(checkOverlap(lasers, beetle.bug)) {
+        beetle.bug.kill();
       }
-      if(checkOverlap(badges, raptor.dino)) {
-        raptor.dino.kill();
+      if(checkOverlap(badges, beetle.bug)) {
+        beetle.bug.kill();
       }
-      if(checkOverlap(bomboms, raptor.dino)) {
-        raptor.dino.kill();
+      if(checkOverlap(bomboms, beetle.bug)) {
+        beetle.bug.kill();
       }
-      self.physics.arcade.collide(player, raptor.dino, function() {
+      self.physics.arcade.collide(player, beetle.bug, function() {
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {

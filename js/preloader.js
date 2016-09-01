@@ -28,7 +28,7 @@ Game.Preloader.prototype = {
     this.load.image('badge', '../assets/badge.png');
     this.load.image('bombom', '../assets/bombom.png');
 
-    this.load.image('dino', '../assets/enemy.png');
+    this.load.spritesheet('bug', '../assets/bug-enemy2.png', 32, 32);
 
   },
 
