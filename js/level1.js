@@ -212,31 +212,27 @@ Game.Level1.prototype = {
       }
     }
     ///find right spike tiles
-    console.log(map.tiles[5]);
+    console.log(map.tiles[3]); //copied from left spike tiles, will update when right spikes are on tilemap
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 5) {
-          console.log("Right spikey found!");
+        if (thisTile && thisTile.index === 3) {
+          console.log("right spikey found!");
           console.log("Y: " + j + ", X: " + i);
-          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
-          // console.log(trampolines);
-          rightSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          rightSpikeCoords.push([i * map.tileWidth, j * map.tileHeight]);
 
         }
       }
     }
     ///find left spike tiles
-    console.log(map.tiles[5]);
+    console.log(map.tiles[3]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 5) {
-          console.log("Right spikey found!");
+        if (thisTile && thisTile.index === 3) {
+          console.log("left spikey found!");
           console.log("Y: " + j + ", X: " + i);
-          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
-          // console.log(trampolines);
-          leftSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          leftSpikeCoords.push([i * map.tileWidth, j * map.tileHeight]);
 
         }
       }
@@ -249,8 +245,6 @@ Game.Level1.prototype = {
         if (thisTile && thisTile.index === 2) {
           console.log("Up spikey found!");
           console.log("Y: " + j + ", X: " + i);
-          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
-          // console.log(trampolines);
           upSpikeCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
 
         }
@@ -262,10 +256,8 @@ Game.Level1.prototype = {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
         if (thisTile && thisTile.index === 4) {
-          console.log("Right spikey found!");
+          console.log("Down spikey found!");
           console.log("Y: " + j + ", X: " + i);
-          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
-          // console.log(trampolines);
           downSpikeCoords.push([i * map.tileWidth, j * map.tileHeight + 16]);
 
         }
@@ -435,7 +427,7 @@ Game.Level1.prototype = {
 
     // for testing in game
     if (controls.test.isDown) {
-      console.log(downSpikeCoords);
+      console.log(leftSpikeCoords);
       console.log(player.body.x);
       console.log(player.body.y);
     }
@@ -473,10 +465,20 @@ Game.Level1.prototype = {
       }
     });
 
-    rightSpikeCoords.forEach(function(rightSpike) {
-      if (player.body.x >= rightSpike[0]-32 && player.body.y >= rightSpike[1]-32 && player.body.x <= rightSpike[0]+32 && player.body.y <= rightSpike[1]+32) {
-        console.log('triggered RIGHT SPIKE PAIN');
-        player.lifeCount --;
+//add this when right spike is on tilemap png
+    // rightSpikeCoords.forEach(function(rightSpike) {
+    //   if (player.body.x >= rightSpike[0]-32 && player.body.y >= rightSpike[1]-32 && player.body.x <= rightSpike[0]+32 && player.body.y <= rightSpike[1]+32) {
+    //     console.log('triggered RIGHT SPIKE PAIN');
+    //   }
+    // });
+
+    leftSpikeCoords.forEach(function(leftSpike) {
+      if (player.body.x + 32 === leftSpike[0] && player.body.y >= leftSpike[1] && player.body.y <= leftSpike[1] + 48) {
+        if (now > tileHurtTimer) {
+          console.log('triggered LEFT SPIKE PAIN');
+          player.lifeCount --;
+          tileHurtTimer = now + 700;
+        }
       }
     });
 
