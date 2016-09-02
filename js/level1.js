@@ -24,6 +24,8 @@ EnemyDino = function(index,game,x,y) {
 };
 
 
+var lives = 4;
+
 var raptors = [];
 var birds = [];
 var mapCoord = [];
@@ -500,12 +502,19 @@ Game.Level1.prototype = {
       player.animations.play('idle');
     }
 
+    ///////losing a life or just losing
     if(player.lifeCount <= 0) {
       console.log('YOU LOSE');
       console.log(player);
       player.reset(testedCheckpoint[0], testedCheckpoint[1]);
-      player.lifeCount = 10;
-      playerSpeed = 300;
+      lives --;
+      if (lives > 0) {
+        console.log('You have ' + lives + ' left');
+        player.lifeCount = 10;
+        playerSpeed = 300;
+      } else {
+        player.kill();
+      }
     }
 
     // for testing in game
