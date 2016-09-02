@@ -142,7 +142,7 @@ var clickForCollape;
     "-1,-1,-1,-1,-1,-1,-1,-1,-1,6,-1,-1",
     "-1,-1,-1,-1,8,-1,-1,-1,-1,-1,-1,-1",
     "-1,-1,1,1,1,1,1,-1,-1,-1,-1,15",
-    "1,1,-1,-1,-1,-1,-1,1,5,1,1,1"
+    "1,1,0,0,0,0,0,1,5,1,1,1"
   ];
   var elevationLoss = new Map(18, 12, 2, 17, elevationLossArray);
   largeLossMaps.push(elevationLoss);
