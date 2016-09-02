@@ -54,6 +54,7 @@ var onWallTimer = 0;
 var secondWallTimer = 0;
 var wallFlag = false;
 var baddieHurtTimer = 0;
+var tileHurtTimer = 0;
 
 var button;
 
@@ -205,7 +206,7 @@ Game.Level1.prototype = {
           console.log("Y: " + j + ", X: " + i);
           // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
           // console.log(trampolines);
-          trampolineCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          trampolineCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
 
         }
       }
@@ -465,9 +466,9 @@ Game.Level1.prototype = {
     }
 
     trampolineCoords.forEach(function(trampoline) {
-      if (player.body.x >= trampoline[0]-32 && player.body.y >= trampoline[1]-32 && player.body.x <= trampoline[0]+32 && player.body.y <= trampoline[1]+32) {
-        console.log('triggered JUMP');
-        player.body.velocity.y = -1500;
+      if ((player.body.x >= trampoline[0] && player.body.x <= trampoline[0] + 64) && Math.ceil(player.body.y) === trampoline[1]) {
+        console.log('triggered TRAMPOLINE');
+        player.body.velocity.y = -1250;
       }
     });
 
@@ -480,8 +481,11 @@ Game.Level1.prototype = {
 
     upSpikeCoords.forEach(function(rightSpike) {
       if ((player.body.x >= rightSpike[0] && player.body.x <= rightSpike[0] + 64) && Math.ceil(player.body.y) === rightSpike[1]) {
-        console.log('triggered TOP SPIKE PAIN');
-        // player.lifeCount --;
+        if (now > tileHurtTimer) {
+          console.log('triggered TOP SPIKE PAIN');
+          player.lifeCount --;
+          tileHurtTimer = now + 700;
+        }
       }
     });
 
