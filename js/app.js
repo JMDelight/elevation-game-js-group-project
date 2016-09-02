@@ -26,15 +26,21 @@ var createMap = function(elevationArray) {
     elevationDifference.push(elevationArray[index + 1] - elevationArray[index]);
   }
   elevationDifference.forEach(function(deltaElevation) {
-    if(deltaElevation > 200) {
+    if(deltaElevation > 400) {
       mapArray.push(largeGainMaps[0]);
       largeGainMaps.push(largeGainMaps.shift());
+    }else if(deltaElevation > 200) {
+      mapArray.push(mediumGainMaps[0]);
+      mediumGainMaps.push(mediumGainMaps.shift());
     } else if (deltaElevation > 0) {
       mapArray.push(slightGainMaps[0]);
       slightGainMaps.push(slightGainMaps.shift());
     } else if (deltaElevation > -200) {
       mapArray.push(slightLossMaps[0]);
       slightLossMaps.push(slightLossMaps.shift());
+    } else if (deltaElevation > -400) {
+      mapArray.push(mediumLossMaps[0]);
+      mediumLossMaps.push(mediumLossMaps.shift());
     } else {
       mapArray.push(largeLossMaps[0]);
       largeLossMaps.push(largeLossMaps.shift());
@@ -57,13 +63,7 @@ $(function() {
     // generatedMap = elevationGain.stitch(elevationGain).stitch(testOne).stitch(elevationLoss).stitch(elevationLoss);
     // generatedMap = runningMap.stitch(runningMap);
     // generatedMap = testOne.stitch(testTwo).stitch(testOne);
-    if (elevations === []) {
-
-      generatedMap = createMap(elevations);
-    } else {
-      generatedMap = createMap([0, 300, 750, 600, 400, 450, 200]);
-      console.log("Yo");
-    }
+    generatedMap = createMap(elevations);
     game = new Phaser.Game(800,600,Phaser.CANVAS,'');
     game.state.add('Boot',Game.Boot);
     game.state.add('Preloader',Game.Preloader);
