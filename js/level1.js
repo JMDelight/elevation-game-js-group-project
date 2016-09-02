@@ -29,6 +29,13 @@ var birds = [];
 var mapCoord = [];
 var birdMapCoord = [];
 
+var trampolineCoords = [];
+var rightSpikeCoords = [];
+var leftSpikeCoords = [];
+var downSpikeCoords = [];
+var upSpikeCoords = [];
+var allSpikeCoords = [];
+
 Game.Level1 = function(game) {};
 
 var map;
@@ -85,7 +92,7 @@ Game.Level1.prototype = {
     // map.setTileIndexCallback(2, this.resetPlayer, this);
     // map.setTileIndexCallback(3, this.resetPlayer, this);
     // map.setTileIndexCallback(4, this.resetPlayer, this);
-    // map.setTileIndexCallback(5, this.resetPlayer, this);
+    // map.setTileIndexCallback(5, this.tileLaunchJump, this);
     // map.setTileIndexCallback(9, this.resetPlayer, this);
 
 
@@ -154,14 +161,7 @@ Game.Level1.prototype = {
     bomboms.setAll('checkWorldBounds', true);
 
 
-    // var enemy = new Enemy(game, 100, 124, 1, enemySpeed);
-    // game.add.existing(enemy);
-    // enemy = new Enemy(game, 384, 123, -1, enemySpeed);
-    // game.add.existing(enemy);
-    // enemy = new Enemy(game, 500, 500, 1, enemySpeed);
-    // game.add.existing(enemy);
-    // enemy = new Enemy(game, 684, 1123, -1, enemySpeed);
-    // game.add.existing(enemy);
+    //find raptor houses
     console.log(map.tiles[8]);
     console.log(map);
     console.log(map.getTile(1, 62));
@@ -179,7 +179,7 @@ Game.Level1.prototype = {
         }
       }
     }
-
+    ///find bird houses
     console.log(map.tiles[7]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
@@ -192,6 +192,96 @@ Game.Level1.prototype = {
           birds.push(new EnemyBird(birds.length, game, i * map.tileWidth + 32, j * map.tileHeight));
           console.log(birds);
           birdMapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
+        }
+      }
+    }
+    ///find trampolines
+    console.log(map.tiles[5]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 5) {
+          console.log("Tramponline found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          trampolineCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+
+        }
+      }
+    }
+    ///find right spike tiles
+    console.log(map.tiles[5]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 5) {
+          console.log("Right spikey found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          rightSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+
+        }
+      }
+    }
+    ///find left spike tiles
+    console.log(map.tiles[5]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 5) {
+          console.log("Right spikey found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          leftSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+
+        }
+      }
+    }
+    ///find up spike tiles
+    console.log(map.tiles[2]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 2) {
+          console.log("Up spikey found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          upSpikeCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
+
+        }
+      }
+    }
+    ///find down spike tiles
+    console.log(map.tiles[5]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 5) {
+          console.log("Right spikey found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          downSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+
+        }
+      }
+    }
+    ///find all spike tiles
+    console.log(map.tiles[5]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 5) {
+          console.log("Right spikey found!");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          allSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+
         }
       }
     }
@@ -343,7 +433,9 @@ Game.Level1.prototype = {
     }
 
     if (controls.test.isDown) {
-      console.log(raptors);
+      console.log(upSpikeCoords);
+      console.log(player.body.x);
+      console.log(player.body.y);
     }
 
     if (controls.shoot.isDown) {
@@ -372,6 +464,26 @@ Game.Level1.prototype = {
       this.dropBombom();
     }
 
+    trampolineCoords.forEach(function(trampoline) {
+      if (player.body.x >= trampoline[0]-32 && player.body.y >= trampoline[1]-32 && player.body.x <= trampoline[0]+32 && player.body.y <= trampoline[1]+32) {
+        console.log('triggered JUMP');
+        player.body.velocity.y = -1500;
+      }
+    });
+
+    rightSpikeCoords.forEach(function(rightSpike) {
+      if (player.body.x >= rightSpike[0]-32 && player.body.y >= rightSpike[1]-32 && player.body.x <= rightSpike[0]+32 && player.body.y <= rightSpike[1]+32) {
+        console.log('triggered RIGHT SPIKE PAIN');
+        player.lifeCount --;
+      }
+    });
+
+    upSpikeCoords.forEach(function(rightSpike) {
+      if ((player.body.x >= rightSpike[0] && player.body.x <= rightSpike[0] + 64) && Math.ceil(player.body.y) === rightSpike[1]) {
+        console.log('triggered TOP SPIKE PAIN');
+        // player.lifeCount --;
+      }
+    });
 
     birds.forEach(function(bird) {
       if(checkOverlap(lasers, bird.bird)) {
@@ -502,6 +614,11 @@ Game.Level1.prototype = {
       hurtTimer = this.time.now + 400;
     }
 
+  },
+
+  tileLaunchJump: function(){
+    console.log("UP UP AND AWAY!!!!");
+    player.body.velocity.y = -1100;
   },
 
   shootLaser: function() {
