@@ -325,7 +325,7 @@ Game.Level1.prototype = {
         if (thisTile && thisTile.index === 14) {
           console.log("right spikey found!");
           console.log("Y: " + j + ", X: " + i);
-          rightSpikeCoords.push([i * map.tileWidth, j * map.tileHeight]);
+          rightSpikeCoords.push([i * map.tileWidth + 64, j * map.tileHeight - 48]);
 
         }
       }
@@ -642,13 +642,11 @@ Game.Level1.prototype = {
       }
     });
 
-
-//add this when right spike is on tilemap png
-    // rightSpikeCoords.forEach(function(rightSpike) {
-    //   if (player.body.x >= rightSpike[0]-32 && player.body.y >= rightSpike[1]-32 && player.body.x <= rightSpike[0]+32 && player.body.y <= rightSpike[1]+32) {
-    //     console.log('triggered RIGHT SPIKE PAIN');
-    //   }
-    // });
+    rightSpikeCoords.forEach(function(rightSpike) {
+      if (player.body.x === rightSpike[0] && player.body.y >= rightSpike[1] && player.body.y <= rightSpike[1] + 64) {
+        console.log('triggered RIGHT SPIKE PAIN');
+      }
+    });
 
     leftSpikeCoords.forEach(function(leftSpike) {
       if (player.body.x + 32 === leftSpike[0] && player.body.y >= leftSpike[1] && player.body.y <= leftSpike[1] + 48) {
