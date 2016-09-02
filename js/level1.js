@@ -25,6 +25,10 @@ EnemyDino = function(index,game,x,y) {
 
 
 var lives = 4;
+var livesText;
+var score = 0;
+var scoreText;
+var healthText;
 
 var raptors = [];
 var birds = [];
@@ -89,6 +93,7 @@ var testedCheckpoint = [0, 0];
 
 Game.Level1.prototype = {
   create:function() {
+
     this.stage.backgroundColor = '#FFBDBD';
 
     this.physics.arcade.gravity.y = 1400;
@@ -112,6 +117,12 @@ Game.Level1.prototype = {
 
     player = this.add.sprite(100,1400,'player');
     player.lifeCount = 10;
+    healthText = game.add.text(200, 16, 'Health: 10', { fontSize: '32px', fill: '#000' });
+    healthText.fixedToCamera = true;
+    scoreText = game.add.text(400, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    livesText = game.add.text(16, 16, 'Lives: 0', { fontSize: '32px', fill: '#000' });
+    scoreText.fixedToCamera = true;
+    livesText.fixedToCamera = true;
     player.anchor.setTo(0.5,0.5);
     player.animations.add('idle',[0,1],1,true);
     player.animations.add('jump',[2],1,true);
@@ -341,6 +352,8 @@ Game.Level1.prototype = {
         }
       }
     }
+
+
   },
 
 
@@ -373,6 +386,7 @@ Game.Level1.prototype = {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
+            healthText.text = 'Health: ' + player.lifeCount;
             console.log('OWIE!');
             playerSpeed -= (10 - player.lifeCount) * 10;
             console.log(playerSpeed);
@@ -508,6 +522,7 @@ Game.Level1.prototype = {
       console.log(player);
       player.reset(testedCheckpoint[0], testedCheckpoint[1]);
       lives --;
+      livesText.text = "Lives: " + lives;
       if (lives > 0) {
         console.log('You have ' + lives + ' left');
         player.lifeCount = 10;
@@ -532,6 +547,7 @@ Game.Level1.prototype = {
     if(checkOverlap(lasers, player)) {
       if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
         player.lifeCount -= 2;
+        healthText.text = "Health: " + player.lifeCount;
         console.log("ouchheee wizz");
         hurtTimer = self.time.now + 400;
         playerSpeed -= (10 - player.lifeCount) * 15;
@@ -571,6 +587,7 @@ Game.Level1.prototype = {
         if (now > tileHurtTimer) {
           console.log('triggered LEFT SPIKE PAIN');
           player.lifeCount --;
+          healthText.text = "Health: " + player.lifeCount;
           tileHurtTimer = now + 700;
         }
       }
@@ -581,6 +598,7 @@ Game.Level1.prototype = {
         if (now > tileHurtTimer) {
           console.log('triggered TOP SPIKE PAIN');
           player.lifeCount --;
+          healthText.text = "Health: " + player.lifeCount;
           tileHurtTimer = now + 700;
         }
       }
@@ -591,6 +609,7 @@ Game.Level1.prototype = {
         if (now > tileHurtTimer) {
           console.log('triggered BOTTOM SPIKE PAIN');
           player.lifeCount --;
+          healthText.text = "Health: " + player.lifeCount;
           tileHurtTimer = now + 700;
         }
       }
@@ -601,6 +620,7 @@ Game.Level1.prototype = {
         if (now > tileHurtTimer) {
           console.log('ALL SPIKE PAIN');
           player.lifeCount --;
+          healthText.text = "Health: " + player.lifeCount;
           tileHurtTimer = now + 700;
         }
       }
@@ -611,6 +631,7 @@ Game.Level1.prototype = {
         if (now > tileHurtTimer) {
           console.log('LAVA PAIN');
           player.lifeCount --;
+          healthText.text = "Health: " + player.lifeCount;
           tileHurtTimer = now + 700;
         }
       }
@@ -626,12 +647,18 @@ Game.Level1.prototype = {
     birds.forEach(function(bird) {
       if(checkOverlap(lasers, bird.bird)) {
         bird.bird.kill();
+        score += 20;
+        scoreText.text = 'Score: ' + score;
       }
       if(checkOverlap(badges, bird.bird)) {
         bird.bird.kill();
+        score += 20;
+        scoreText.text = 'Score: ' + score;
       }
       if(checkOverlap(bomboms, bird.bird)) {
         bird.bird.kill();
+        score += 20;
+        scoreText.text = 'Score: ' + score;
       }
     })
 
@@ -721,18 +748,25 @@ Game.Level1.prototype = {
 
       if(checkOverlap(lasers, raptor.dino)) {
         raptor.dino.kill();
+        score += 10;
+        scoreText.text = 'Score: ' + score;
       }
       if(checkOverlap(badges, raptor.dino)) {
         raptor.dino.kill();
+        score += 10;
+        scoreText.text = 'Score: ' + score;
       }
       if(checkOverlap(bomboms, raptor.dino)) {
         raptor.dino.kill();
+        score += 10;
+        scoreText.text = 'Score: ' + score;
       }
       self.physics.arcade.collide(player, raptor.dino, function() {
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
+            healthText.text = 'Health: ' + player.lifeCount;
             console.log('OWIE!');
             playerSpeed -= (10 - player.lifeCount) * 5;
             console.log(playerSpeed);
@@ -744,6 +778,7 @@ Game.Level1.prototype = {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
             player.lifeCount --;
+            healthText.text = 'Health: ' + player.lifeCount;
             console.log('CANNON OWIE!');
             playerSpeed -= (10 - player.lifeCount) * 2;
             console.log(playerSpeed);
@@ -760,6 +795,7 @@ Game.Level1.prototype = {
     if(this.time.now > hurtTimer) {
       console.log('lost one life');
       player.lifeCount --;
+      healthText.text = 'Health: ' + player.lifeCount;
       hurtTimer = this.time.now + 400;
     }
 
