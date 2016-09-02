@@ -52,6 +52,8 @@ var playerSpeed = 300;
 var jumpTimer = 0;
 var secondJump = false;
 var releaseFirstJump = false;
+var airborne = false;
+var jumpDegreeTimer = 0;
 var wallJumpTimer = 0;
 var hurtTimer = 0;
 var onWall = false;
@@ -388,13 +390,27 @@ Game.Level1.prototype = {
       releaseFirstJump = false;
       onWall = false;
       wallFlag = false;
+      airborne = false;
+      jumpDegreeTimer = 0;
     }
 
     if(controls.up.isDown && (player.body.onFloor() || player.body.touching.down) && this.time.now > jumpTimer && !secondJump){
         player.animations.play('jump');
-        player.body.velocity.y = -800;
+        player.body.velocity.y = -400;
         jumpTimer = this.time.now + 750;
         secondJump = true;
+        airborne = true;
+        jumpDegreeTimer = 1;
+    }
+
+    if (airborne && controls.up.isDown && jumpDegreeTimer !== 0) {
+      if (jumpDegreeTimer < 14) {
+        console.log('bonus flight!');
+        player.body.velocity.y -= 40;
+        jumpDegreeTimer ++;
+      } else {
+        jumpDegreeTimer = 0;
+      }
     }
 
     if(secondJump && (player.body.blocked.left || player.body.blocked.right) && !player.body.touching.down && player.body.velocity.y > 0) {
@@ -764,8 +780,8 @@ Game.Level1.prototype = {
     cannonball = cannonballs.getFirstExists(false);
     if(cannonball){
       cannonball.reset(x+32, y+64);
-      cannonball.body.velocity.y = 0;
-      cannonball.body.velocity.x = 800;
+      cannonball.body.velocity.y = -50;
+      cannonball.body.velocity.x = 600;
       if((Math.floor(Math.random() * 2) === 0)) {
         cannonball.body.velocity.x *= -1;
       }
