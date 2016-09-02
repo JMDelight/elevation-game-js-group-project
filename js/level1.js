@@ -37,6 +37,10 @@ var upSpikeCoords = [];
 var allSpikeCoords = [];
 var lavaCoords = [];
 
+var cannonCoords = [];
+var cannonTimer = 0;
+var cannonballs;
+
 Game.Level1 = function(game) {};
 
 var map;
@@ -162,6 +166,17 @@ Game.Level1.prototype = {
     bomboms.setAll('outOfBoundsKill', true);
     bomboms.setAll('checkWorldBounds', true);
 
+    cannonballs = game.add.group();
+    cannonballs.enableBody = true;
+    // cannonballs.physicsBodyType = Phaser.Physics.ARCADE;
+    cannonballs.createMultiple(5, 'cannonball');
+    cannonballs.setAll('anchor.x', 0.5);
+    cannonballs.setAll('anchor.y', 0.5);
+    cannonballs.setAll('scale.x', 0.5);
+    cannonballs.setAll('scale.y', 0.5);
+    cannonballs.setAll('outOfBoundsKill', true);
+    cannonballs.setAll('checkWorldBounds', true);
+
 
     //find raptor houses
     console.log(map.tiles[8]);
@@ -209,6 +224,18 @@ Game.Level1.prototype = {
           // console.log(trampolines);
           trampolineCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
 
+        }
+      }
+    }
+    ///find cannon
+    console.log(map.tiles[10]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 10) {
+          console.log("A cannon was found!");
+          console.log("Y: " + j + ", X: " + i);
+          cannonCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
         }
       }
     }
@@ -526,9 +553,6 @@ Game.Level1.prototype = {
           tileHurtTimer = now + 700;
         }
       }
-      // if (player.body.x >= allSpike[0] && player.body.x <= allSpike[0] + 64 && player.body.y - 64 >= allSpike[1] && player.body.y <= allSpike[1]) {
-      //   console.log('ALL SPIKE TRIGGERED');
-      // }
     });
 
     lavaCoords.forEach(function(lavaTile) {
@@ -540,6 +564,13 @@ Game.Level1.prototype = {
         }
       }
     });
+
+    if(now > cannonTimer) {
+      cannonCoords.forEach(function(cannon) {
+        self.fireCannon(cannon[0], cannon[1], now);
+      });
+      cannonTimer = now + 9000;
+    }
 
     birds.forEach(function(bird) {
       if(checkOverlap(lasers, bird.bird)) {
@@ -657,6 +688,17 @@ Game.Level1.prototype = {
           }
         }
       });
+      self.physics.arcade.collide(player, cannonballs, function() {
+        if (now > baddieHurtTimer) {
+          baddieHurtTimer = now + 800;
+          if(baddieHurtTimer === now + 800) {
+            player.lifeCount --;
+            console.log('CANNON OWIE!');
+            playerSpeed -= (10 - player.lifeCount) * 2;
+            console.log(playerSpeed);
+          }
+        }
+      });
     });
 
   },
@@ -716,7 +758,19 @@ Game.Level1.prototype = {
         bombomTime = this.time.now + 5000;
       }
     }
-  }
+  },
+
+  fireCannon: function(x, y, now) {
+    cannonball = cannonballs.getFirstExists(false);
+    if(cannonball){
+      cannonball.reset(x+32, y+64);
+      cannonball.body.velocity.y = 0;
+      cannonball.body.velocity.x = 800;
+      if((Math.floor(Math.random() * 2) === 0)) {
+        cannonball.body.velocity.x *= -1;
+      }
+    }
+  },
 
 };
 
