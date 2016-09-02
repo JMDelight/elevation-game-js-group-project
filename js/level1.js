@@ -279,6 +279,21 @@ Game.Level1.prototype = {
         }
       }
     }
+    ///find lava tiles
+    console.log(map.tiles[9]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 9) {
+          console.log("Lava tile found");
+          console.log("Y: " + j + ", X: " + i);
+          // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          // console.log(trampolines);
+          lavaCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
+
+        }
+      }
+    }
   },
 
 
@@ -460,7 +475,7 @@ Game.Level1.prototype = {
     }
 
     trampolineCoords.forEach(function(trampoline) {
-      if ((player.body.x >= trampoline[0] && player.body.x <= trampoline[0] + 64) && Math.ceil(player.body.y) === trampoline[1]) {
+      if ((player.body.x >= trampoline[0] && player.body.x <= trampoline[0] + 64) && (Math.ceil(player.body.y) === trampoline[1] || Math.ceil(player.body.y) === trampoline[1] -1)) {
         console.log('triggered TRAMPOLINE');
         player.body.velocity.y = -1250;
       }
@@ -505,11 +520,25 @@ Game.Level1.prototype = {
 
     allSpikeCoords.forEach(function(allSpike) {
       if (player.body.x+33 >= allSpike[0] && player.body.x-1 <= allSpike[0] + 64 && player.body.y+1 >= allSpike[1] && player.body.y <= allSpike[1] + 117) {
-        console.log('ALL SPIKE TRIGGERED');
+        if (now > tileHurtTimer) {
+          console.log('ALL SPIKE PAIN');
+          player.lifeCount --;
+          tileHurtTimer = now + 700;
+        }
       }
       // if (player.body.x >= allSpike[0] && player.body.x <= allSpike[0] + 64 && player.body.y - 64 >= allSpike[1] && player.body.y <= allSpike[1]) {
       //   console.log('ALL SPIKE TRIGGERED');
       // }
+    });
+
+    lavaCoords.forEach(function(lavaTile) {
+      if (player.body.x+33 >= lavaTile[0] && player.body.x-1 <= lavaTile[0] + 64 && player.body.y+1 >= lavaTile[1] && player.body.y <= lavaTile[1] + 117) {
+        if (now > tileHurtTimer) {
+          console.log('LAVA PAIN');
+          player.lifeCount --;
+          tileHurtTimer = now + 700;
+        }
+      }
     });
 
     birds.forEach(function(bird) {
