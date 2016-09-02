@@ -37,6 +37,8 @@ var upSpikeCoords = [];
 var allSpikeCoords = [];
 var lavaCoords = [];
 
+var checkpointCoords = [];
+
 var cannonCoords = [];
 var cannonTimer = 0;
 var cannonballs;
@@ -78,6 +80,8 @@ var raptorHouseCount = 0;
 var birdHouseCount = 0;
 
 var mostRecentLaser;
+
+var testedCheckpoint = [0, 0];
 
 
 
@@ -241,6 +245,18 @@ Game.Level1.prototype = {
         }
       }
     }
+    ///find checkpoints
+    console.log(map.tiles[1]);
+    for (i = 0; i < map.width; i++) {
+      for (j = 0; j < map.height; j++) {
+        var thisTile = map.getTile(i, j);
+        if (thisTile && thisTile.index === 1) {
+          console.log("A checkpoint was found!");
+          console.log("Y: " + j + ", X: " + i);
+          checkpointCoords.push([i * map.tileWidth, j * map.tileHeight]);
+        }
+      }
+    }
     ///find right spike tiles
     console.log(map.tiles[3]); //copied from left spike tiles, will update when right spikes are on tilemap
     for (i = 0; i < map.width; i++) {
@@ -363,7 +379,15 @@ Game.Level1.prototype = {
       });
     });
 
-
+    checkpointCoords.forEach(function(checkpoint) {
+      if (player.body.position.x > checkpoint[0]) {
+        if (testedCheckpoint[0] === 0) {
+          testedCheckpoint = [checkpoint[0], checkpoint[1]];
+        } else if (testedCheckpoint[0] < checkpoint[0]) {
+          testedCheckpoint = [checkpoint[0], checkpoint[1]];
+        }
+      }
+    });
 
     if(this.time.now > wallJumpTimer) {
       player.body.velocity.x = 0;
@@ -479,14 +503,15 @@ Game.Level1.prototype = {
     if(player.lifeCount <= 0) {
       console.log('YOU LOSE');
       console.log(player);
-      player.reset(100, 1400);
+      player.reset(testedCheckpoint[0], testedCheckpoint[1]);
       player.lifeCount = 10;
       playerSpeed = 300;
     }
 
     // for testing in game
     if (controls.test.isDown) {
-      console.log(allSpikeCoords);
+      console.log(checkpointCoords);
+      console.log(testedCheckpoint);
       console.log(player.body.x);
       console.log(player.body.y);
     }
@@ -523,6 +548,7 @@ Game.Level1.prototype = {
         player.body.velocity.y = -1250;
       }
     });
+
 
 //add this when right spike is on tilemap png
     // rightSpikeCoords.forEach(function(rightSpike) {
