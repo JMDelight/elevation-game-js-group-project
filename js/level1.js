@@ -904,8 +904,8 @@ Game.Level1.prototype = {
     }
   });
 
-  if(player.body.velocity.y > 150) {
-    player.body.velocity.y = 150;
+  if(player.body.velocity.y > 650) {
+    player.body.velocity.y = 650;
   }
 },
 
