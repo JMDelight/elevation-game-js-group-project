@@ -1,7 +1,7 @@
 var googleApiKey = "AIzaSyBhUKekPJIDoePtmA-KN3Fl6kbtCDI9X5I";
 var weatherApiKey = "f6d5e105043feba8a008178d8d88ac87";
 var type = "";
-var elevations = [];
+var elevations = [1000, 500, 200, 1000, 900, 1000];
 var clouds1;
 var wind1;
 var weather1;
@@ -28,6 +28,7 @@ var weatherType = function(weatherId){
 
 $(document).ready(function() {
   $("#google-elevation").submit(function(event){
+    elevations = [];
     event.preventDefault();
 
     var addressesArray1 = [];
@@ -98,7 +99,7 @@ $(document).ready(function() {
           console.log(weather2);
 
         });
-        $.get('https://maps.googleapis.com/maps/api/elevation/json?path='+ latitude1 + "," + longitude1 + "|" + latitude2 + "," + longitude2 + '&samples=4&key=' + googleApiKey, function(response){
+        $.get('https://maps.googleapis.com/maps/api/elevation/json?path='+ latitude1 + "," + longitude1 + "|" + latitude2 + "," + longitude2 + '&samples=10&key=' + googleApiKey, function(response){
 
           for(var ii=0; ii<response.results.length; ii++){
             var lat = response.results[ii].location.lat;

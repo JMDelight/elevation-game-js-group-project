@@ -137,6 +137,13 @@ Game.Level1.prototype = {
   create:function() {
 
     this.stage.backgroundColor = '#FFBDBD';
+    background = game.add.sprite(0,0, 'background');
+    background.x = 0;
+    background.y = 0;
+    background.height = game.height;
+    background.width = game.width;
+    background.fixedToCamera = true;
+
 
     this.physics.arcade.gravity.y = 1400;
 
