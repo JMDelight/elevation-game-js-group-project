@@ -13,15 +13,22 @@ EnemyBird = function(index,game,x,y) {
 
 };
 
-EnemyDino = function(index,game,x,y) {
-  this.dino = game.add.sprite(x,y,'dino');
-  this.dino.anchor.setTo(0.5,0.5);
-  this.dino.name = index.toString();
-  game.physics.enable(this.dino, Phaser.Physics.ARCADE);
-  this.dino.body.immovable = true;
-  this.dino.body.collideWorldBounds = true;
-  this.dino.body.allowGravity = true;
+
+EnemyBug = function(index,game,x,y) {
+  this.bug = game.add.sprite(x,y,'bug');
+  this.bug.anchor.setTo(0.5,0.5);
+  this.bug.name = index.toString();
+  game.physics.enable(this.bug, Phaser.Physics.ARCADE);
+  this.bug.body.immovable = true;
+  this.bug.body.collideWorldBounds = true;
+  this.bug.body.allowGravity = true;
 };
+
+
+
+  // this.bugTween = game.add.tween(this.bug).to({
+  //   y: this.bug.y + 50
+  // }, 2000, 'Linear', true, 0, 100, true);
 
 
 var lives = 4;
@@ -32,6 +39,40 @@ var healthText;
 
 var raptors = [];
 var birds = [];
+
+var enemy1;
+var enemy2;
+var bugs = [];
+
+// Enemy = function (game_state, position, properties) {
+//   "use strict";
+//   Platformer.Prefab.call(this, game_state, position, properties);
+//
+//   this.walking_speed = +properties.walking_speed;
+//   this.walking_distance = +properties.walking_distance;
+//   this.previous_x = this.x;
+//   this.game_state.game.physics.arcade.enable(this);
+//   this.body.velocity.x = properties.direction * this.walking_speed;
+//
+//   this.scale.setTo(-properties.direction, 1);
+//
+//   this.anchor.setTo(0.5);
+// }
+//
+// Enemy.prototype = Object.create(.Prefab.prototype);
+// Enemy.prototype.constructor = Platformer.Enemy;
+//
+// Platformer.Enemy.prototype.update = function() {
+//   "use strict";
+//   this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
+//
+//   if (Math.abs(this.x - this.previous_x) >= this.walking_distance) {
+//     this.body.velocity.x *= -1;
+//     this.previous_x = this.x;
+//     this.scale.setTo(-this.scale.x, 1);
+//   }
+// }
+
 var mapCoord = [];
 var birdMapCoord = [];
 
@@ -79,11 +120,12 @@ var badges;
 var bombomTime = 0;
 var bomboms;
 
-var dinoCounter = 1;
-var dinoCounterPrev = 0;
+var bugCounter = 1;
+var bugCounterPrev = 0;
 
 var raptorHouseCount = 0;
 var birdHouseCount = 0;
+var beetleHouseCount = 0;
 
 var mostRecentLaser;
 
@@ -151,6 +193,12 @@ Game.Level1.prototype = {
     //
     // button.fixedToCamera = true;
 
+    enemy1 = new EnemyBird(0, game, player.x + 1190, player.y - 1280);
+
+    enemy2 = new EnemyBug(0, game, player.x + 1400, player.y -1280);
+    enemy2.bug.animations.add('left',[10,11,12,13,14,15],30,true);
+    enemy2.bug.animations.add('jump',[2,3,4,5,6,7,8,9],30,true);
+
 
     lasers = game.add.group();
     lasers.enableBody = true;
@@ -206,12 +254,10 @@ Game.Level1.prototype = {
         var thisTile = map.getTile(i, j);
         // console.log(thisTile);
         if (thisTile && thisTile.index === 8) {
-          console.log("Raptor home found!");
-          raptorHouseCount ++;
+          console.log("Bug home found!");
           console.log("Y: " + j + ", X: " + i);
-          raptors.push(new EnemyDino(raptors.length, game, i * map.tileWidth + 32, j * map.tileHeight));
-          console.log(raptors);
-          mapCoord.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          bugs.push(new EnemyBug(bugs.length, game, i * map.tileWidth + 32, j * map.tileHeight));
+          console.log(bugs);
         }
       }
     }
@@ -361,24 +407,27 @@ Game.Level1.prototype = {
   update:function(){
 
     var self = this;
-    var deadRaptors = 0;
-    raptors.forEach(function(raptor) {
-      if (!raptor.dino.alive) {
-        deadRaptors ++;
+    var deadbugs = 0;
+    bugs.forEach(function(beetle) {
+      if (!beetle.bug.alive) {
+        deadbugs ++;
       }
     });
     if(this.time.now % 300 === 0) {
       mapCoord.forEach(function(coordinates) {
-        if(raptors.length - deadRaptors < raptorHouseCount * 3) {
-          raptors.push(new EnemyDino(raptors.length, game, coordinates[0], coordinates[1]));
+        if(bugs.length - deadbugs < beetleHouseCount * 3) {
+          bugs.push(new EnemyDino(bugs.length, game, coordinates[0], coordinates[1]));
         }
       });
     }
 
     var now = this.time.now;
     this.physics.arcade.collide(player,layer);
-    raptors.forEach(function(raptor) {
-      self.physics.arcade.collide(raptor.dino, layer);
+
+    this.physics.arcade.collide(enemy2.bug, layer);
+    var self = this;
+    bugs.forEach(function(beetle) {
+      self.physics.arcade.collide(beetle.bug, layer);
     });
     birds.forEach(function(bird) {
       self.physics.arcade.collide(player, bird.bird, function() {
@@ -534,16 +583,26 @@ Game.Level1.prototype = {
 
     // for testing in game
     if (controls.test.isDown) {
+
       console.log(checkpointCoords);
       console.log(testedCheckpoint);
       console.log(player.body.x);
       console.log(player.body.y);
+
+      console.log(bugs);
+
     }
 
     if (controls.shoot.isDown) {
       this.shootLaser();
     }
 
+    if(checkOverlap(lasers, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
+    if(checkOverlap(lasers, enemy2.bug)) {
+      enemy2.bug.kill();
+    }
     if(checkOverlap(lasers, player)) {
       if (mostRecentLaser.body.velocity.y > 0 && self.time.now > hurtTimer) {
         player.lifeCount -= 2;
@@ -560,6 +619,14 @@ Game.Level1.prototype = {
 
     if (controls.shootRight.isDown) {
       this.shootBadge("right");
+    }
+
+
+    if(checkOverlap(badges, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
+    if(checkOverlap(badges, enemy2.bug)) {
+      enemy2.bug.kill();
     }
 
 
@@ -644,6 +711,14 @@ Game.Level1.prototype = {
       cannonTimer = now + 9000;
     }
 
+    if(checkOverlap(bomboms, enemy1.bird)) {
+      enemy1.bird.kill();
+    }
+    if(checkOverlap(bomboms, enemy2.bug)) {
+      enemy2.bug.kill();
+
+    }
+
     birds.forEach(function(bird) {
       if(checkOverlap(lasers, bird.bird)) {
         bird.bird.kill();
@@ -660,108 +735,135 @@ Game.Level1.prototype = {
         score += 20;
         scoreText.text = 'Score: ' + score;
       }
-    })
+    });
 
-    ////dino
+    ////bug
     ////movement
-
-    raptors.forEach(function(raptor) {
+    var self = this;
+    bugs.forEach(function(beetle) {
       if ((Math.floor(Math.random() * 3) === 0)) {
-        if(dinoCounter > 0 && dinoCounter < 300 && dinoCounter !== dinoCounterPrev) {
-          if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
+        if(bugCounter > 0 && bugCounter < 300 && bugCounter !== bugCounterPrev) {
+          if(!beetle.bug.body.blocked.left && !beetle.bug.body.blocked.right) {
             var speed = 3;
             if((Math.floor(Math.random() * 2) === 0)) speed = 4;
             if((Math.floor(Math.random() * 3) === 0)) speed = 8;
             if((Math.floor(Math.random() * 16) === 0)) speed = 20;
             if((Math.floor(Math.random() * 2) === 0)) {
-              raptor.dino.body.velocity.x -= speed;
+              beetle.bug.body.velocity.x -= speed;
+              beetle.bug.animations.play('left');
             } else {
-              raptor.dino.body.velocity.x += speed;
+              beetle.bug.body.velocity.x += speed;
+              beetle.bug.animations.play('left');
+              beetle.bug.scale.x *= -1;
             }
 
           }
-          if(raptor.dino.body.blocked.left) {
-            raptor.dino.body.velocity.x += 2;
-            if (!raptor.dino.body.blocked.up) {
-              raptor.dino.body.velocity.y -= 300;
+          if(beetle.bug.body.blocked.left) {
+            beetle.bug.body.velocity.x += 2;
+            if (!beetle.bug.body.blocked.up) {
+              beetle.bug.body.velocity.y -= 300;
             }
           }
-          if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) === 0)) {
-              raptor.dino.body.velocity.y -= 500;
+          if(beetle.bug.body.touching.down || beetle.bug.body.onFloor()) {
+            if((Math.floor(Math.random() * 20) === 0)) {
+              beetle.bug.body.velocity.y -= 500;
+              if(beetle.bug.body.velocity.x > 0) {
+                beetle.bug.animations.play('jump');
+                beetle.bug.scale.x *= -1;
+              } else if(beetle.bug.body.velocity.x <= 0) {
+                beetle.bug.animations.play('jump');
+              }
             }
-            raptor.dino.body.velocity.x -= 10;
+            beetle.bug.body.velocity.x -= 10;
           }
-          if(raptor.dino.body.blocked.up) {
-            raptor.dino.body.velocity.y += 400;
-            raptor.dino.body.velocity.x += 40;
+          if(beetle.bug.body.blocked.up) {
+            beetle.bug.body.velocity.y += 400;
+            beetle.bug.body.velocity.x += 40;
           }
           if((Math.floor(Math.random() * 800) === 0)) {
-            raptor.dino.body.velocity.x += 30;
-            raptor.dino.body.position.y -= 80;
+            beetle.bug.body.velocity.x += 30;
+            beetle.bug.body.position.y -= 80;
           }
-          dinoCounter ++;
-          dinoCounterPrev ++;
-          if(dinoCounter === 1) {
-            dinoCounterPrev --;
+          bugCounter ++;
+          bugCounterPrev ++;
+          if(bugCounter === 1) {
+            bugCounterPrev --;
           }
         } else {
-          if(!raptor.dino.body.blocked.left && !raptor.dino.body.blocked.right) {
-            var raptorSpeed = 3;
-            if((Math.floor(Math.random() * 2) === 0)) raptorSpeed = 4;
-            if((Math.floor(Math.random() * 3) === 0)) raptorSpeed = 8;
-            if((Math.floor(Math.random() * 16) === 0)) raptorSpeed = 20;
+          if(!beetle.bug.body.blocked.left && !beetle.bug.body.blocked.right) {
+            var speed = 3;
+            if((Math.floor(Math.random() * 2) === 0)) speed = 4;
+            if((Math.floor(Math.random() * 3) === 0)) speed = 8;
+            if((Math.floor(Math.random() * 16) === 0)) speed = 20;
             if((Math.floor(Math.random() * 2) === 0)) {
-              raptor.dino.body.velocity.x += raptorSpeed;
+              beetle.bug.body.velocity.x += speed;
             } else {
-              raptor.dino.body.velocity.x -= raptorSpeed;
+              beetle.bug.body.velocity.x -= speed;
             }
 
           }
-          if(raptor.dino.body.blocked.left) {
-            raptor.dino.body.velocity.x -= 2;
-            if (!raptor.dino.body.blocked.up) {
-              raptor.dino.body.velocity.y -= 300;
+          if(beetle.bug.body.blocked.left) {
+            beetle.bug.body.velocity.x -= 2;
+            if (!beetle.bug.body.blocked.up) {
+              beetle.bug.body.velocity.y -= 300;
             }
           }
-          if(raptor.dino.body.touching.down || raptor.dino.body.onFloor()) {
-            if((Math.floor(Math.random() * 5) === 0)) {
-              raptor.dino.body.velocity.y -= 500;
+          if(beetle.bug.body.touching.down || beetle.bug.body.onFloor()) {
+            if(beetle.bug.body.x )
+            if((Math.floor(Math.random() * 20) === 0)) {
+              beetle.bug.body.velocity.y -= 500;
+              if(beetle.bug.body.velocity.x > 0) {
+                beetle.bug.animations.play('jump');
+                beetle.bug.scale.x *= -1;
+              } else if(beetle.bug.body.velocity.x <= 0) {
+                beetle.bug.animations.play('jump');
+              }
             }
-            raptor.dino.body.velocity.x += 10;
+            beetle.bug.body.velocity.x += 10;
           }
-          if(raptor.dino.body.blocked.up) {
-            raptor.dino.body.velocity.y += 400;
-            raptor.dino.body.velocity.x -= 40;
+          if(beetle.bug.body.blocked.up) {
+            beetle.bug.body.velocity.y += 400;
+            beetle.bug.body.velocity.x -= 40;
           }
-          if (dinoCounter === 300) dinoCounterPrev ++;
-          dinoCounter --;
-          dinoCounterPrev --;
-          if (dinoCounter === 1) {
-            dinoCounter = 1;
-            dinoCounterPrev = 0;
+          if (bugCounter === 300) bugCounterPrev ++;
+          bugCounter --;
+          bugCounterPrev --;
+          if (bugCounter === 1) {
+            bugCounter = 1;
+            bugCounterPrev = 0;
           }
 
         }
 
       }
 
-      if(checkOverlap(lasers, raptor.dino)) {
-        raptor.dino.kill();
+
+      if(checkOverlap(lasers, beetle.bug)) {
+        beetle.bug.kill();
         score += 10;
         scoreText.text = 'Score: ' + score;
       }
-      if(checkOverlap(badges, raptor.dino)) {
-        raptor.dino.kill();
+      if(checkOverlap(badges, beetle.bug)) {
+        beetle.bug.kill();
         score += 10;
         scoreText.text = 'Score: ' + score;
       }
-      if(checkOverlap(bomboms, raptor.dino)) {
-        raptor.dino.kill();
+      if(checkOverlap(bomboms, beetle.bug)) {
+        beetle.bug.kill();
         score += 10;
         scoreText.text = 'Score: ' + score;
+
+      if(checkOverlap(lasers, beetle.bug)) {
+        beetle.bug.kill();
       }
-      self.physics.arcade.collide(player, raptor.dino, function() {
+      if(checkOverlap(badges, beetle.bug)) {
+        beetle.bug.kill();
+      }
+      if(checkOverlap(bomboms, beetle.bug)) {
+        beetle.bug.kill();
+
+      }
+      self.physics.arcade.collide(player, beetle.bug, function() {
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
@@ -785,9 +887,10 @@ Game.Level1.prototype = {
           }
         }
       });
-    });
+    }
+  });
+},
 
-  },
 
 
   resetPlayer: function(){
@@ -860,7 +963,6 @@ Game.Level1.prototype = {
   },
 
 };
-
 function checkOverlap(spriteA,spriteB) {
   var boundsA = spriteA.getBounds();
   var boundsB = spriteB.getBounds();
