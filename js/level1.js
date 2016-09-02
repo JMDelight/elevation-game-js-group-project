@@ -954,10 +954,7 @@ Game.Level1.prototype = {
     if(cannonball){
       cannonball.reset(x+32, y+64);
       cannonball.body.velocity.y = -50;
-      cannonball.body.velocity.x = 600;
-      if((Math.floor(Math.random() * 2) === 0)) {
-        cannonball.body.velocity.x *= -1;
-      }
+      cannonball.body.velocity.x = -600;
     }
   },
 
