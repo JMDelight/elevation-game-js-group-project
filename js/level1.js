@@ -120,7 +120,7 @@ Game.Level1.prototype = {
     healthText = game.add.text(200, 16, 'Health: 10', { fontSize: '32px', fill: '#000' });
     healthText.fixedToCamera = true;
     scoreText = game.add.text(400, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-    livesText = game.add.text(16, 16, 'Lives: 0', { fontSize: '32px', fill: '#000' });
+    livesText = game.add.text(16, 16, 'Lives: ' + lives.toString(), { fontSize: '32px', fill: '#000' });
     scoreText.fixedToCamera = true;
     livesText.fixedToCamera = true;
     player.anchor.setTo(0.5,0.5);
@@ -521,7 +521,7 @@ Game.Level1.prototype = {
       console.log('YOU LOSE');
       console.log(player);
       player.reset(testedCheckpoint[0], testedCheckpoint[1]);
-      lives --;
+      if(lives > 0) lives --;
       livesText.text = "Lives: " + lives;
       if (lives > 0) {
         console.log('You have ' + lives + ' left');
@@ -777,7 +777,7 @@ Game.Level1.prototype = {
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
-            player.lifeCount --;
+            player.lifeCount -= 4;
             healthText.text = 'Health: ' + player.lifeCount;
             console.log('CANNON OWIE!');
             playerSpeed -= (10 - player.lifeCount) * 2;
