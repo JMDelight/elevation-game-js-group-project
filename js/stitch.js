@@ -11,6 +11,7 @@ function Map(numberOfRows, numberOfColumns, startingRow, endingRow, rows) {
 
 Map.prototype.output = function() {
   var workingOutputString = "";
+  console.log("Map= ", this);
   for(var mapColumn = 0; mapColumn < this.numberOfColumns; mapColumn ++) {
     workingOutputString += "-1";
     if (mapColumn !== this.numberOfColumns - 1) {
