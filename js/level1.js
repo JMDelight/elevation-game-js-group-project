@@ -31,7 +31,7 @@ EnemyBug = function(index,game,x,y) {
   // }, 2000, 'Linear', true, 0, 100, true);
 
 
-var lives = 4;
+var lives = 400;
 var livesText;
 var score = 0;
 var scoreText;
@@ -903,6 +903,10 @@ Game.Level1.prototype = {
       });
     }
   });
+
+  if(player.body.velocity.y > 150) {
+    player.body.velocity.y = 150;
+  }
 },
 
 

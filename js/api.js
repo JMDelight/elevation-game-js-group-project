@@ -199,7 +199,6 @@ $(document).ready(function() {
 $("#show-type").click(function(){
   console.log(elevations);
 
-
   var elevationsText= "";
   for(var i=0;i<elevations.length; i++){
     var number = i+1;
