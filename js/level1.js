@@ -149,6 +149,7 @@ Game.Level1.prototype = {
     layer.resizeWorld();
 
     map.setCollisionBetween(0,6);
+    map.setCollisionBetween(10,14);
 
     // map.setTileIndexCallback(2, this.resetPlayer, this);
     // map.setTileIndexCallback(3, this.resetPlayer, this);
@@ -245,7 +246,7 @@ Game.Level1.prototype = {
     cannonballs.setAll('checkWorldBounds', true);
 
 
-    //find raptor houses
+    //find ground spawn points
     console.log(map.tiles[8]);
     console.log(map);
     console.log(map.getTile(1, 62));
@@ -261,7 +262,7 @@ Game.Level1.prototype = {
         }
       }
     }
-    ///find bird houses
+    ///find flying spawner tiles
     console.log(map.tiles[7]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
@@ -305,11 +306,11 @@ Game.Level1.prototype = {
       }
     }
     ///find checkpoints
-    console.log(map.tiles[1]);
+    console.log(map.tiles[15]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 1) {
+        if (thisTile && thisTile.index === 15) {
           console.log("A checkpoint was found!");
           console.log("Y: " + j + ", X: " + i);
           checkpointCoords.push([i * map.tileWidth, j * map.tileHeight]);
@@ -317,11 +318,11 @@ Game.Level1.prototype = {
       }
     }
     ///find right spike tiles
-    console.log(map.tiles[3]); //copied from left spike tiles, will update when right spikes are on tilemap
+    console.log(map.tiles[14]); //copied from left spike tiles, will update when right spikes are on tilemap
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 3) {
+        if (thisTile && thisTile.index === 14) {
           console.log("right spikey found!");
           console.log("Y: " + j + ", X: " + i);
           rightSpikeCoords.push([i * map.tileWidth, j * map.tileHeight]);
@@ -330,11 +331,11 @@ Game.Level1.prototype = {
       }
     }
     ///find left spike tiles
-    console.log(map.tiles[3]);
+    console.log(map.tiles[12]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 3) {
+        if (thisTile && thisTile.index === 12) {
           console.log("left spikey found!");
           console.log("Y: " + j + ", X: " + i);
           leftSpikeCoords.push([i * map.tileWidth, j * map.tileHeight]);
@@ -343,11 +344,11 @@ Game.Level1.prototype = {
       }
     }
     ///find up spike tiles
-    console.log(map.tiles[2]);
+    console.log(map.tiles[11]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 2) {
+        if (thisTile && thisTile.index === 11) {
           console.log("Up spikey found!");
           console.log("Y: " + j + ", X: " + i);
           upSpikeCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
@@ -356,11 +357,11 @@ Game.Level1.prototype = {
       }
     }
     ///find down spike tiles
-    console.log(map.tiles[4]);
+    console.log(map.tiles[13]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 4) {
+        if (thisTile && thisTile.index === 13) {
           console.log("Down spikey found!");
           console.log("Y: " + j + ", X: " + i);
           downSpikeCoords.push([i * map.tileWidth, j * map.tileHeight + 16]);

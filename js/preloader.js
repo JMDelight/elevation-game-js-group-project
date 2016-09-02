@@ -17,9 +17,9 @@ Game.Preloader.prototype = {
     this.load.setPreloadSprite(this.preloadBar);
     var mapData = generatedMap.output();
     //LOAD ALL ASSETS
-    this.load.tilemap('map', '../basic-tilemap/jumping-playground.csv');
+    this.load.tilemap('map', '../map-assets/jumping-playground.csv');
     // this.load.tilemap('map', null, mapData, Phaser.Tilemap.CSV);
-    this.load.image('tileset', '../map-assets/BasicTileSet64x64.png');
+    this.load.image('tileset', '../map-assets/DirtTileMap64x64.png');
     this.load.image('bird', '../assets/bird.png');
     this.load.spritesheet('player', '../assets/dude.png', 32, 48);
     this.load.spritesheet('buttons', '../assets/button_sprite_sheet.png', 193, 71);
