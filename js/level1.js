@@ -35,6 +35,7 @@ var leftSpikeCoords = [];
 var downSpikeCoords = [];
 var upSpikeCoords = [];
 var allSpikeCoords = [];
+var lavaCoords = [];
 
 Game.Level1 = function(game) {};
 
@@ -264,16 +265,16 @@ Game.Level1.prototype = {
       }
     }
     ///find all spike tiles
-    console.log(map.tiles[5]);
+    console.log(map.tiles[6]);
     for (i = 0; i < map.width; i++) {
       for (j = 0; j < map.height; j++) {
         var thisTile = map.getTile(i, j);
-        if (thisTile && thisTile.index === 5) {
+        if (thisTile && thisTile.index === 6) {
           console.log("Right spikey found!");
           console.log("Y: " + j + ", X: " + i);
           // trampolines.push([i * map.tileWidth + 32, j * map.tileHeight]);
           // console.log(trampolines);
-          allSpikeCoords.push([i * map.tileWidth + 32, j * map.tileHeight]);
+          allSpikeCoords.push([i * map.tileWidth, j * map.tileHeight - 48]);
 
         }
       }
@@ -427,7 +428,7 @@ Game.Level1.prototype = {
 
     // for testing in game
     if (controls.test.isDown) {
-      console.log(leftSpikeCoords);
+      console.log(allSpikeCoords);
       console.log(player.body.x);
       console.log(player.body.y);
     }
@@ -500,6 +501,15 @@ Game.Level1.prototype = {
           tileHurtTimer = now + 700;
         }
       }
+    });
+
+    allSpikeCoords.forEach(function(allSpike) {
+      if (player.body.x+33 >= allSpike[0] && player.body.x-1 <= allSpike[0] + 64 && player.body.y+1 >= allSpike[1] && player.body.y <= allSpike[1] + 117) {
+        console.log('ALL SPIKE TRIGGERED');
+      }
+      // if (player.body.x >= allSpike[0] && player.body.x <= allSpike[0] + 64 && player.body.y - 64 >= allSpike[1] && player.body.y <= allSpike[1]) {
+      //   console.log('ALL SPIKE TRIGGERED');
+      // }
     });
 
     birds.forEach(function(bird) {
