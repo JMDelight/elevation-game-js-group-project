@@ -44,9 +44,6 @@ var enemy1;
 var enemy2;
 var bugs = [];
 
-var blockTimer = 0;
-var breakTile = [];
-
 // Enemy = function (game_state, position, properties) {
 //   "use strict";
 //   Platformer.Prefab.call(this, game_state, position, properties);
@@ -140,13 +137,6 @@ Game.Level1.prototype = {
   create:function() {
 
     this.stage.backgroundColor = '#FFBDBD';
-    background = game.add.sprite(0,0, 'background');
-    background.x = 0;
-    background.y = 0;
-    background.height = game.height;
-    background.width = game.width;
-    background.fixedToCamera = true;
-
 
     this.physics.arcade.gravity.y = 1400;
 
@@ -161,9 +151,9 @@ Game.Level1.prototype = {
     map.setCollisionBetween(0,6);
     map.setCollisionBetween(10,14);
 
-    map.setTileIndexCallback(2, this.breakBlock2, this);
-    map.setTileIndexCallback(3, this.breakBlock3, this);
-    map.setTileIndexCallback(4, this.breakBlock4, this);
+    // map.setTileIndexCallback(2, this.resetPlayer, this);
+    // map.setTileIndexCallback(3, this.resetPlayer, this);
+    // map.setTileIndexCallback(4, this.resetPlayer, this);
     // map.setTileIndexCallback(5, this.tileLaunchJump, this);
     // map.setTileIndexCallback(9, this.resetPlayer, this);
 
@@ -654,12 +644,7 @@ Game.Level1.prototype = {
 
     rightSpikeCoords.forEach(function(rightSpike) {
       if (player.body.x === rightSpike[0] && player.body.y >= rightSpike[1] && player.body.y <= rightSpike[1] + 64) {
-        if (now > tileHurtTimer) {
-          console.log('triggered RIGHT SPIKE PAIN');
-          player.lifeCount --;
-          healthText.text = "Health: " + player.lifeCount;
-          tileHurtTimer = now + 700;
-        }
+        console.log('triggered RIGHT SPIKE PAIN');
       }
     });
 
@@ -878,6 +863,7 @@ Game.Level1.prototype = {
 
       }
       self.physics.arcade.collide(player, beetle.bug, function() {
+        console.log('beetle collision');
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
@@ -890,6 +876,7 @@ Game.Level1.prototype = {
         }
       });
       self.physics.arcade.collide(player, cannonballs, function() {
+        console.log('cannonball collision');
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
@@ -972,47 +959,6 @@ Game.Level1.prototype = {
       cannonball.body.velocity.x = -600;
     }
   },
-
-  breakBlock4: function(){
-    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
-    console.log(thisTile);
-    if(this.time.now > blockTimer) {
-      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
-        map.putTile(3, layer.getTileX(player.x), layer.getTileY(player.y-1));
-        player.body.velocity.y = 200;
-        player.body.velocity.x = -50
-        blockTimer = this.time.now + 340;
-      }
-
-    }
-  },
-  breakBlock3: function(){
-    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
-    console.log(thisTile);
-    if(this.time.now > blockTimer) {
-      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
-        map.putTile(2, layer.getTileX(player.x), layer.getTileY(player.y-1));
-        player.body.velocity.y = 200;
-        player.body.velocity.x = -50;
-        blockTimer = this.time.now + 340;
-      }
-
-    }
-  },
-  breakBlock2: function(){
-    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
-    console.log(thisTile);
-    if(this.time.now > blockTimer) {
-      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
-        map.putTile(-1, layer.getTileX(player.x), layer.getTileY(player.y-1));
-        player.body.velocity.y = 200;
-        player.body.velocity.x = -50;
-        blockTimer = this.time.now + 340;
-      }
-
-    }
-  },
-
 
 };
 function checkOverlap(spriteA,spriteB) {
