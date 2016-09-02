@@ -44,6 +44,9 @@ var enemy1;
 var enemy2;
 var bugs = [];
 
+var blockTimer = 0;
+var breakTile = [];
+
 // Enemy = function (game_state, position, properties) {
 //   "use strict";
 //   Platformer.Prefab.call(this, game_state, position, properties);
@@ -151,9 +154,9 @@ Game.Level1.prototype = {
     map.setCollisionBetween(0,6);
     map.setCollisionBetween(10,14);
 
-    // map.setTileIndexCallback(2, this.resetPlayer, this);
-    // map.setTileIndexCallback(3, this.resetPlayer, this);
-    // map.setTileIndexCallback(4, this.resetPlayer, this);
+    map.setTileIndexCallback(2, this.breakBlock2, this);
+    map.setTileIndexCallback(3, this.breakBlock3, this);
+    map.setTileIndexCallback(4, this.breakBlock4, this);
     // map.setTileIndexCallback(5, this.tileLaunchJump, this);
     // map.setTileIndexCallback(9, this.resetPlayer, this);
 
@@ -962,6 +965,47 @@ Game.Level1.prototype = {
       cannonball.body.velocity.x = -600;
     }
   },
+
+  breakBlock4: function(){
+    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
+    console.log(thisTile);
+    if(this.time.now > blockTimer) {
+      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
+        map.putTile(3, layer.getTileX(player.x), layer.getTileY(player.y-1));
+        player.body.velocity.y = 200;
+        player.body.velocity.x = -50
+        blockTimer = this.time.now + 340;
+      }
+
+    }
+  },
+  breakBlock3: function(){
+    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
+    console.log(thisTile);
+    if(this.time.now > blockTimer) {
+      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
+        map.putTile(2, layer.getTileX(player.x), layer.getTileY(player.y-1));
+        player.body.velocity.y = 200;
+        player.body.velocity.x = -50;
+        blockTimer = this.time.now + 340;
+      }
+
+    }
+  },
+  breakBlock2: function(){
+    var thisTile = map.getTile(layer.getTileX(player.x), layer.getTileY(player.y));
+    console.log(thisTile);
+    if(this.time.now > blockTimer) {
+      if(map.getTile(layer.getTileX(player.x), layer.getTileY(player.y))) {
+        map.putTile(-1, layer.getTileX(player.x), layer.getTileY(player.y-1));
+        player.body.velocity.y = 200;
+        player.body.velocity.x = -50;
+        blockTimer = this.time.now + 340;
+      }
+
+    }
+  },
+
 
 };
 function checkOverlap(spriteA,spriteB) {
