@@ -644,12 +644,7 @@ Game.Level1.prototype = {
 
     rightSpikeCoords.forEach(function(rightSpike) {
       if (player.body.x === rightSpike[0] && player.body.y >= rightSpike[1] && player.body.y <= rightSpike[1] + 64) {
-        if (now > tileHurtTimer) {
-          console.log('triggered RIGHT SPIKE PAIN');
-          player.lifeCount --;
-          healthText.text = "Health: " + player.lifeCount;
-          tileHurtTimer = now + 700;
-        }
+        console.log('triggered RIGHT SPIKE PAIN');
       }
     });
 
@@ -868,6 +863,7 @@ Game.Level1.prototype = {
 
       }
       self.physics.arcade.collide(player, beetle.bug, function() {
+        console.log('beetle collision');
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
@@ -880,6 +876,7 @@ Game.Level1.prototype = {
         }
       });
       self.physics.arcade.collide(player, cannonballs, function() {
+        console.log('cannonball collision');
         if (now > baddieHurtTimer) {
           baddieHurtTimer = now + 800;
           if(baddieHurtTimer === now + 800) {
